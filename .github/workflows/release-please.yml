@@ -202,7 +202,7 @@ jobs:
           # artifactContentType: application/zip
           draft: true
           tag: ${{ needs.release-please.outputs.release_tag_name }}
-          artifacts: release-macos/${{ env.DIST_FILE_NAME }}-macos.zip
+          artifacts: ./${{ env.DIST_FILE_NAME }}-macos.zip
           token: ${{ github.token }}
 
       - name: Tidy up before existing
