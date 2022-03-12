@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.2](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.1...qs-jwt-v1.5.2) (2022-03-12)
+
+
+### Bug Fixes
+
+* macOS builds ([d6d37d4](https://github.com/ptarmiganlabs/qs-jwt/commit/d6d37d454506f1e584c47ea6695b0688902daa7d))
+
 ### [1.5.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.0...qs-jwt-v1.5.1) (2022-03-12)
 
 
