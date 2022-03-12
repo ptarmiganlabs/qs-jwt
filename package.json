@@ -1,0 +1,43 @@
+{
+  "name": "qs-jwt",
+  "version": "0.1.0",
+  "description": "Command line tool for creating JWTs that can be used to authenticate with both Qlik Sense Cloud and client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows, QSEoW)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ptarmiganlabs/qs-jwt.git"
+  },
+  "keywords": [
+    "qlik-sense",
+    "qliksense",
+    "qlik",
+    "senseops"
+  ],
+  "author": "Göran Sander",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ptarmiganlabs/qs-jwt/issues"
+  },
+  "homepage": "https://github.com/ptarmiganlabs/qs-jwt#readme",
+  "dependencies": {
+    "commander": "^9.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^8.5.1",
+    "node-forge": "^1.2.1",
+    "npm": "^8.5.3",
+    "uid-safe": "^2.1.5",
+    "winston": "^3.3.3",
+    "yargs": "^17.3.1"
+  },
+  "devDependencies": {
+    "prettier": "2.5.1"
+  }
+}
