@@ -24,8 +24,12 @@ Those tools focus on things such as real-time monitoring of client-managed Qlik 
   - [Command line tool](#command-line-tool)
   - [JWT claims](#jwt-claims)
 - [Modes of operation](#modes-of-operation)
-  - [QSEoW: Create JWTs using an existing certificate](#qseow-create-jwts-using-an-existing-certificate)
-  - [QSEoW: Create JWTs using a new certificate created by qs-jwt](#qseow-create-jwts-using-a-new-certificate-created-by-qs-jwt)
+  - [Getting help](#getting-help)
+  - [QSEoW: Create JWTs using existing certificate and private key files](#qseow-create-jwts-using-existing-certificate-and-private-key-files)
+    - [Running qs-jwt on macOS](#running-qs-jwt-on-macos)
+    - [Running qs-jwt on Windows Server 2016](#running-qs-jwt-on-windows-server-2016)
+  - [QSEoW: Create JWTs using existing certificate and private passed as parameters](#qseow-create-jwts-using-existing-certificate-and-private-passed-as-parameters)
+  - [QSEoW: Create new certificate and key pair, then create JWT](#qseow-create-new-certificate-and-key-pair-then-create-jwt)
 - [Logging](#logging)
 - [Security and isclosure](#security-and-isclosure)
 
@@ -76,6 +80,7 @@ Drawbacks of JWTs
 
 - [jwt.io](https://jwt.io) is a great starting point for anything JWT related.
 - [Blog post](https://blog.logrocket.com/jwt-authentication-best-practices/) explaining how JWTs can be used for authentication
+- qlik.dev has good articles about [using JWTs with QSEoW](https://qlik.dev/tutorials/using-qlik-sense-on-windows-repository-api-qrs-with-qlik-cli) as well as with [Qlik Sense Cloud](https://qlik.dev/tutorials/create-signed-tokens-for-jwt-authorization).
 
 ## What is qs-jwt
 
@@ -122,14 +127,81 @@ There are a few different variants to consider when creating JWTs for Qlik Sense
 qs-jwt currently supports creating JWTs for QSEoW, but Qlik Sense Cloud support is around the corner.  
 The certificate question is handled though: qs-jwt can either use existing certificate/keys or create new ones.
 
-## QSEoW: Create JWTs using an existing certificate
+## Getting help
 
+You can always pass in the `--help` option to see a complete list of all options:
+
+```bash
+
+
+
+```
+
+## QSEoW: Create JWTs using existing certificate and private key files
+
+![qs-jwt using existing cert and key files](./docs/img/qs-jwt-existing-cert-file-1.png "qs-jwt using existing cert and key files")
+
+If you already have a certificate with associated key pair (PEM encoded) those can be used to sign the created JWT.
+
+An example could be if Qlik Sense is running in Azure/Google Cloud/Amazon EC2 and you use their various feature for handling secrets and certificates. A certificate and key value pair can then be created and stored there and then used with qs-jwt.
+
+If you want to create a certificate and a private key manually that's easy too.  
+On macOS it can look like this:
+
+```bash
+➜  qs-jwt openssl genrsa -out privatekey.pem 4096
+Generating RSA private key, 4096 bit long modulus
+..............................++
+..................................++
+e is 65537 (0x10001)
+➜  qs-jwt openssl req -new -x509 -key privatekey.pem -out publickey.cer -days 1825
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:.
+State or Province Name (full name) []:.
+Locality Name (eg, city) []:.
+Organization Name (eg, company) []:.
+Organizational Unit Name (eg, section) []:.
+Common Name (eg, fully qualified host name) []:qs-jwt
+Email Address []:.
+➜  qs-jwt ls -la
+total 16
+drwxr-xr-x   4 goran  staff   128 Mar 12 20:32 .
+drwxr-xr-x  33 goran  staff  1056 Mar 12 20:31 ..
+-rw-r--r--   1 goran  staff  3243 Mar 12 20:32 privatekey.pem
+-rw-r--r--   1 goran  staff  1663 Mar 12 20:32 publickey.cer
+➜  qs-jwt
+```
+
+Doing the same on Windows is a bit tricky as openssl is not natively supported on Windows. There are however several projects that make openssl available on Windows, for example [here](https://slproweb.com/products/Win32OpenSSL.html).
+
+### Running qs-jwt on macOS
+
+```bash
+
+```
+
+### Running qs-jwt on Windows Server 2016
+
+
+
+
+## QSEoW: Create JWTs using existing certificate and private passed as parameters
+
+![qs-jwt using existing cert and key as parameters](./docs/img/qs-jwt-existing-cert-param-1.png "qs-jwt using existing cert and key as parameters")
 
 
 ```bash
 ```
 
-## QSEoW: Create JWTs using a new certificate created by qs-jwt
+## QSEoW: Create new certificate and key pair, then create JWT
+
+![qs-jwt creating both new cert, keys and JWT](./docs/img/qs-jwt-new-cert-1.png "qs-jwt creating both new cert, keys and JWT")
 
 # Logging
 
