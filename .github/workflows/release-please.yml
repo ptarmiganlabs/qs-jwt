@@ -183,6 +183,8 @@ jobs:
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
           AC_APP_IDENTITY: ${{ secrets.AC_APP_IDENTITY }}
         run: |
+          pwd
+          ls -la
           gon ./release-config/gon.json
 
       - name: Debug
