@@ -167,10 +167,10 @@ jobs:
       #     # The password used to import the PKCS12 file.
       #     p12-password: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_PASSWORD }}
 
-      - name: Install gon via HomeBrew for code signing and app notarization
-        run: |
-          brew tap mitchellh/gon
-          brew install mitchellh/gon/gon
+      # - name: Install gon via HomeBrew for code signing and app notarization
+      #   run: |
+      #     brew tap mitchellh/gon
+      #     brew install mitchellh/gon/gon
 
       - name: Debug
         run: |
@@ -183,7 +183,6 @@ jobs:
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
           AC_APP_IDENTITY: ${{ secrets.AC_APP_IDENTITY }}
         run: |
-          ls -la
           gon ./release-config/gon.json
 
       - name: Debug
