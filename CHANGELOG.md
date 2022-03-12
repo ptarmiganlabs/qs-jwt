@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.0...qs-jwt-v1.5.1) (2022-03-12)
+
+
+### Documentation
+
+* update ([7061266](https://github.com/ptarmiganlabs/qs-jwt/commit/7061266c5f5c11644d3226c91d1396eb1657dedc))
+
 ## [1.5.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.4.0...qs-jwt-v1.5.0) (2022-03-12)
 
 
