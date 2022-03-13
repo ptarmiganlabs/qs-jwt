@@ -20,7 +20,7 @@ const program = new Command();
         );
 
     program
-        .command('create')
+        .command('create-qseow')
         .allowExcessArguments(false)
         .description(
             'Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows) or Qlik Cloud. Use --target option to target either platform.'
@@ -37,12 +37,6 @@ const program = new Command();
                 logger.error(`MAIN jwt create: ${err}`);
             }
         })
-        .addOption(
-            new Option(
-                '--target <target>',
-                'Will JWT be used with client-managed Qlik Sense (=QSEoW) or Qlik Cloud?'
-            ).choices(['qseow', 'cloud'])
-        )
         .addOption(
             new Option('--loglevel <level>', 'Logging level')
                 .choices(['error', 'warning', 'info', 'verbose', 'debug'])

@@ -1,14 +1,15 @@
 <h1 align="center">QS-JWT</h1>
 <h3 align="center">Easily create Qlik Sense JWTs</h3>
 <p align="center">
-<a href="https://github.com/ptarmiganlabs/qs-jwt"><img src="https://img.shields.io/badge/Source---" alt="Source"></a>
-<a href="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/docker-image-build.yml"><img src="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/docker-image-build.yml/badge.svg" alt="Continuous Integration"></a>
-<a href="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/selfhosted-test-macos.yml"><img src="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/selfhosted-test-macos.yml/badge.svg?branch=main" alt="Continuous Integration"></a>
-<a href="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/selfhosted-test-winsrv2016.yml"><img src="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/selfhosted-test-winsrv2016.yml/badge.svg?branch=main" alt="Continuous Integration"></a>
+<a href="https://github.com/ptarmiganlabs/qs-jwt">
+<img src="https://img.shields.io/badge/Source---" alt="Source"></a>
+<a href="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/release-please.yml"><img src="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/release-please.yml/badge.svg?branch=main" alt="Continuous Integration"></a>
 </p>
 
 A cross platform, command line tool for creating JWTs (=JSON Web Tokens) that can be used to authenticate with Qlik Sense.
-JWTs for both Qlik Sense Cloud and Qlik Sense Enterprise on Windows (QSEoW) can be created.
+
+Currently JWTs for Qlik Sense Enterprise on Windows (QSEoW) can be created.  
+Support for Qlik Sense Cloud JWTs coming soon.
 
 qs-jwt nicely complements the more operationally focused open source tools in the [Butler family](https://github.com/ptarmiganlabs).  
 Those tools focus on things such as real-time monitoring of client-managed Qlik Sense environments, flexible and powerful alerts/notifications when reloads fail, automatically creating sheet thumbnails and much more. More info at [https://github.com/ptarmiganlabs](https://github.com/ptarmiganlabs).
@@ -60,26 +61,26 @@ In other words: Qlik Sense JWTs should be treated just like user IDs and passwor
 So what does this mean in a Qlik Sense context?
 Let's break it down a bit:
 
-- A Qlik Sense user directory and id is embedded in the JWT.
+- A Qlik Sense user directory and ID is embedded in the JWT.
 - Once a tool presents the JWT to a Qlik Sense API, Sense will be able to use the user dir/id in the JWT to first authenticate the user, then also decide (using security rules) what the user should be allowed to do in Sense.
-- Each JWT can be configured with an expiry time. It's a good security principle to keep the expiry dates short.
+- Each JWT is configured with an expiry time. It's a good security principle to keep the expiry dates short.
 - Additional metadata can be included in the JWT. Example include email address, real name, group belonging, access roles etc. This information is available in Sense security rules.
 - The JWT is not encrypted, but it is cryptographically signed. This means that it's not possible to modify or tamper with the JWT once it's been created.
-- JWTs can be used with both client-managed Qlik Sense (=Qlik Sense Enterprise on Windows, QSEoW) as well as Qlik Sense Cloud.
+- JWTs can be used with both client-managed Qlik Sense (=Qlik Sense Enterprise on Windows, QSEoW) as well as Qlik Sense Cloud. The exact format vary though, so those JWTs are not interchangeable.
 
 ## JWT pros and cons
 
 Benefits of JWTs include
 
-- The Qlik Sense admin can control both who gets API access and how long that access will be valid for
-- The JWT can include any metadata
-- Well-established, proven concept
+- The Qlik Sense admin can control which Sense user/account is given API access and how long that access will be valid for.
+- The JWT can include any metadata that will then be available in Sense security rules.
+- Well-established, proven concept to provide authenticated API access.
 
 Drawbacks of JWTs
 
-- Once created and handed over to someone it's not possible to revoke the JWT. It will simply work until its expiry date has passed.
+- Once created and handed over to someone it's not possible to revoke the JWT. It will simply work until its expiry date has passed or the central certificate is changed. But that will revoke *all* JWTs created using that certificate/key.
 - The revoking issue can be solved, but this requires additional software/services outside of Qlik Sense. Sense itself does not have a built-in revokation service.
-- The JWT used with Qlik Sense are not encrypted. This means they can be read by anyone able to listen on the network traffic. Using https solves this problem.
+- The JWT used with Qlik Sense are not encrypted. This means they can be read by anyone able to listen on the network traffic. Using https goes a long way towards solving this problem.
 
 ## Online JWT resources
 
@@ -89,11 +90,12 @@ Drawbacks of JWTs
 
 ## What is qs-jwt
 
-JWTs can be created using various online tools.  
+JWTs can be created using various online tools.
+
 This can be fine during development and testing, but in production scenarious it's not be ideal (should not be accepted - period!) to enter user credentials in some random web page.  
 
 If limited to web based JWT tools it is also difficult or impossible to automate creation of JWTs.  
-While not a problem for some it may be a showstopper for others, for example if the JWTs are created with short expiry times and need to be automatically recreated.  
+While not a problem for some it may be a showstopper for others, for example if the JWTs are created with short expiry times and/or need to be automatically recreated.
 
 > *The core idea behind qs-jwt is to simplify JWT creation and make it easier to include JWTs in CI/CD pipelines and similar scenarios.*
 
@@ -112,13 +114,13 @@ Make sure to check for new versions (or subscribe to updates) - new features are
 qs-jwt is a command line tool intended to be used from scripts written in Powershell, bash or similar shells.  
 Or just from the command line for one-off creation of JWTs.
 
-Given the above focus on integration in various automation scenarios, all needed information are passed in as parameters to the tool.  
+Given the above focus on integration in various automation scenarios, all needed information is passed to qs-jwt as parameters and options.  
 There are thus - by design - no interactive prompts what so ever in qs-jwt.
 
 ## JWT claims
 
-A JWT "claim" is a piece of information that's included in the JWT. Examples include email address, user name, group belongings etc.  
-Claims may sound like a strange term for this, but you can think of it as metadata presented by the calling system to Qlik Sense during the API call.
+A JWT "claim" is a piece of information that's included in the JWT. Examples include email address, user name, group belongings and other metadata associated with user accounts.  
+Claims may sound like a strange term for this, but you can think of it as metadata presented by the calling system to Qlik Sense during the API call. The fact that the JWT is signed means Sense can trust that the JWT has not been modified since it was created.
 
 # Commands
 
@@ -128,45 +130,44 @@ Run `qs-jwt --help` to get a list of available commands and options
 ➜  qs-jwt ./qs-jwt --help
 Usage: qs-jwt [options] [command]
 
-This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (self-managed) as well as Qlik Sense Cloud/SaaS.
+This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (self-managed Qlik Sense).
 The JWTs can be used when accessing Sense APIs from third party applications and services.
-JWTs are usually preferred over certuficates as JWTs embed a specific user, which means access control can be applied when JWTs are used.
+JWTs are usually preferred over certuficates as JWTs embed a specific user, which means access control can be applied.
 
 Options:
-  -V, --version     output the version number
-  -h, --help        display help for command
+  -V, --version           output the version number
+  -h, --help              display help for command
 
 Commands:
-  create [options]  Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows) or Qlik Cloud. Use
-                    --target option to target either platform.
-  help [command]    display help for command
+  create-qseow [options]  Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows)
+                          or Qlik Cloud. Use --target option to target either platform.
+  help [command]          display help for command
 ➜  qs-jwt
 ```
 
-## "create" command
+## "create-qseow" command
 
 Purpose: To create a new JWT.  
 Syntax:
 
 ```bash
-➜  qs-jwt ./qs-jwt create --help
-Usage: qs-jwt create [options]
+➜  qs-jwt ./qs-jwt create-qseow --help
+Usage: qs-jwt create-qseow [options]
 
 Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows) or Qlik Cloud. Use --target option to target either platform.
 
 Options:
-  --target <target>                  Will JWT be used with client-managed Qlik Sense (=QSEoW) or Qlik Cloud? (choices: "qseow",
-                                     "cloud")
-  --loglevel <level>                 Logging level (choices: "error", "warning", "info", "verbose", "debug", default: "info")
+  --loglevel <level>                 Logging level (choices: "error", "warning", "info", "verbose", "debug", default:
+                                     "info")
   --userdir <directory>              user directory (e.g. MYDIRNAME) that will be embedded in the JWT
   --userid <userid>                  user ID (e.g. johnsmith) that will be embedded in the JWT
   --username <name>                  User name (e.g. John Smith) that will be embedded in the JWT
   --useremail <email>                Email address that will be embedded in the JWT
   --groups <groups...>               Which groups the user dir/ID embedded in the JWT should be
-  --expires <time>                   Time during which the JWT will be valid. Examples: 60m (60 minutes), 48h (48 hours), 365d (365
-                                     days), 5y (5 years)
-  --audience <audience>              JWT audience field. Audience in JWT must match the audience defined in the QSEoW virtual proxy
-                                     being used
+  --expires <time>                   Time during which the JWT will be valid. Examples: 60m (60 minutes), 48h (48
+                                     hours), 365d (365 days), 5y (5 years)
+  --audience <audience>              JWT audience field. Audience in JWT must match the audience defined in the QSEoW
+                                     virtual proxy being used
   --cert-privatekey-file <file>      File containing private key of certificate that will be used to sign the JWT
   --cert-privatekey <privatekey>     Certificate private key of certificate that will be used to sign the JWT.
   --cert-create [true|false]         Should a new certificate be created? (choices: "true", "false", default: "false")
@@ -180,20 +181,21 @@ Options:
 
 There are a few different variants to consider when creating JWTs for Qlik Sense:
 
-- Will the JWT be used with client-managed Qlik Sense (=Qlik Sense Enterprise on Windows, QSEoW) or with Qlik Sense cloud? 
-  These use JWTs with slightly different structure inside.
+- Will the JWT be used with client-managed Qlik Sense (=Qlik Sense Enterprise on Windows, QSEoW) or with Qlik Sense cloud? These use JWTs with slightly different structure inside.
 - Do you already have a crypto certificate with an associated key pair, or do you need to create one first?
 
 qs-jwt currently supports creating JWTs for QSEoW, but Qlik Sense Cloud support is around the corner.  
-The certificate question is handled though: qs-jwt can either use an existing certificate/key or create new ones.
+The certificate question above is handled though: qs-jwt can either use an existing certificate/key or create new ones.
 
 ## QSEoW: Create JWTs using existing certificate and private key files
 
 ![qs-jwt using existing cert and key files](./docs/img/qs-jwt-existing-cert-file-1.png "qs-jwt using existing cert and key files")
 
-If you already have a certificate with associated key pair (PEM encoded) those can be used to sign the created JWT.
+If you already have a certificate with an associated private key (PEM encoded), that key can (proably) be used to sign the created JWT and the certificate used in the QSEoW virtual proxy configuration.
 
 An example could be if Qlik Sense is running in Azure/Google Cloud/Amazon EC2 and you use their various feature for handling secrets and certificates. A certificate and key value pair can then be created and stored there and then used with qs-jwt.
+
+You could in theory also use the certificate/key created as part of every QSEoW installation, but that is generally not recommended except for testing purposes. Much better and more flexible to have a cert/key dedicated for JWT creation and authentication.
 
 ### Create a certificate using openssl
 
@@ -236,7 +238,7 @@ Doing the same on Windows is a bit tricky as openssl is not natively supported o
 
 This example will
 
-- Create a JWT for Qlik Sense Enterprise on Windows (the `--target qseow` option).
+- Create a JWT for Qlik Sense Enterprise on Windows (the `create-qseow` command).
 - Create a JWT for user `anna` in Sense userdirectory `GRUSGRUS`. Grusgrus is a fictitious company.
 - The JWT will expire in 365 days.
 - The private key in file `privatekey.pem` will be used to sign the JWT.
@@ -246,7 +248,7 @@ This example will
 
 Command (assuming the qs-jwt binary is available in the current directory):
 
-`./qs-jwt create --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --target qseow --cert-privatekey-file privatekey.pem --groups group1 "group 2" --expires 365d`
+`./qs-jwt create-qseow --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --cert-privatekey-file privatekey.pem --groups group1 "group 2" --expires 365d`
 
 ![qs-jwt running on macOS, using existing key file](./docs/img/qs-jwt-macos-1.png "qs-jwt running on macOS, using existing key file")
 
@@ -261,7 +263,7 @@ Command (assuming the qs-jwt binary is available in the current directory):
 This example will
 
 - Set the environment variable `QSJWTPRIVKEY` to the contents of the private key in `privatekey.pem` file.
-- Create a JWT for Qlik Sense Enterprise on Windows (the `--target qseow` option).
+- Create a JWT for Qlik Sense Enterprise on Windows (the `create-qseow` command).
 - Create a JWT for user `anna` in Sense userdirectory `GRUSGRUS`. Grusgrus is a fictitious company.
 - The JWT will expire in 365 days.
 - The private key in environment variable `QSJWTPRIVKEY` will be used to sign the JWT.
@@ -273,7 +275,7 @@ Command (assuming the qs-jwt binary is available in the current directory):
 
 `export QSJWTPRIVKEY=$(cat ./privatekey.pem)`
 
-`./qs-jwt create --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --target qseow --cert-privatekey-file privatekey.pem --groups group1 "group 2" --expires 365d`
+`./qs-jwt create-qseow --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --cert-privatekey-file privatekey.pem --groups group1 "group 2" --expires 365d`
 
 ![qs-jwt running on macOS, using existing key file](./docs/img/qs-jwt-macos-2.png "qs-jwt running on macOS, using existing key file")
 
@@ -291,7 +293,7 @@ An optional prefix can be added to the file names, this is done by using the `--
 
 This example will
 
-- Create a JWT for Qlik Sense Enterprise on Windows (the `--target qseow` option).
+- Create a JWT for Qlik Sense Enterprise on Windows (the `create-qseow` command).
 - Create a JWT for user `anna` in Sense userdirectory `GRUSGRUS`. Grusgrus is a fictitious company.
 - The JWT will expire in 365 days.
 - A new private/public key pair will be created, as well as a new certificate based on that private key.
@@ -304,7 +306,7 @@ This example will
 
 Command (assuming the qs-jwt binary is available in the current directory):
 
-`./qs-jwt create --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --target qseow --cert-create true --cert-create-expires-days 400 --cert-file-prefix "qsjwt_" --groups group1 "group 2" --expires 365d`
+`./qs-jwt create-qseow --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --cert-create true --cert-create-expires-days 400 --cert-file-prefix "qsjwt_" --groups group1 "group 2" --expires 365d`
 
 ![qs-jwt running on macOS, creating new cert and key](./docs/img/qs-jwt-macos-3.png "qs-jwt running on macOS, creating new cert and key")
 
@@ -322,7 +324,7 @@ Default logging level is `info`
 
 qs-jwt is open source and you have access to all source code.  
 It is *your own* responsibility to determine if qs-jwt is suitable for *your* use case.  
-The creators of qs-jwt, including Ptarmigan Labs, Göran Sander or any other contributor, can never be held liable to past or future security issues of qs-jwt.  
+The creators of qs-jwt, including Ptarmigan Labs, Göran Sander or any other contributor, can and must never be held liable to past or future security issues of qs-jwt.  
 If you have security concerns or ideas around qs-jwt, please get involved in the project and contribute to making it better!
 
-> If you discover a serious bug with qs-jwt that may pose a security problem, please disclose it confidentially to security@ptarmiganlabs.com first, so that it can be assessed and hopefully fixed prior to being exploited. Please do not raise GitHub issues for security-related doubts or problems.
+> If you discover a serious bug with qs-jwt that may pose a security problem, please disclose it confidentially to security@ptarmiganlabs.com first, so it can be assessed and hopefully fixed prior to being exploited. Please do not raise GitHub issues for security-related doubts or problems.
