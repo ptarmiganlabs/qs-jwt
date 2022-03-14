@@ -30,11 +30,13 @@ Those tools focus on things such as real-time monitoring of client-managed Qlik 
   - [QSEoW: Create JWTs using existing certificate and private key files](#qseow-create-jwts-using-existing-certificate-and-private-key-files)
     - [Create a certificate using openssl](#create-a-certificate-using-openssl)
     - [Running on macOS](#running-on-macos)
-    - [Running qs-jwt on Windows Server 2016](#running-qs-jwt-on-windows-server-2016)
+    - [Running on Windows Server 2016](#running-on-windows-server-2016)
   - [QSEoW: Create JWTs using existing certificate and private passed as parameters](#qseow-create-jwts-using-existing-certificate-and-private-passed-as-parameters)
     - [Running on macOS](#running-on-macos-1)
+    - [Running on Windows Server 2016](#running-on-windows-server-2016-1)
   - [QSEoW: Create new certificate and key pair, then create JWT](#qseow-create-new-certificate-and-key-pair-then-create-jwt)
     - [Running on macOS](#running-on-macos-2)
+    - [Running on Windows Server 2016](#running-on-windows-server-2016-2)
 - [Using JWTs in security rules](#using-jwts-in-security-rules)
 - [Logging](#logging)
 - [Security and isclosure](#security-and-isclosure)
@@ -87,6 +89,8 @@ Drawbacks of JWTs
 - [jwt.io](https://jwt.io) is a great starting point for anything JWT related.
 - [Blog post](https://blog.logrocket.com/jwt-authentication-best-practices/) explaining how JWTs can be used for authentication
 - qlik.dev has good articles about [using JWTs with QSEoW](https://qlik.dev/tutorials/using-qlik-sense-on-windows-repository-api-qrs-with-qlik-cli) as well as with [Qlik Sense Cloud](https://qlik.dev/tutorials/create-signed-tokens-for-jwt-authorization).
+- Qlik Sense Enterprise on Windows [help pages](https://help.qlik.com/en-US/sense-admin/February2022/Subsystems/DeployAdministerQSE/Content/Sense_DeployAdminister/QSEoW/Administer_QSEoW/Managing_QSEoW/JWT-authentication.htm) has a good description of JWT authentication within QSEoW.
+- Qlik article describing how to [set up a JWT enabled virtual proxy](https://community.qlik.com/t5/Knowledge/Qlik-Sense-How-to-set-up-JWT-authentication/ta-p/1716226) in QSEoW.
 
 ## What is qs-jwt
 
@@ -203,13 +207,16 @@ If you want to create a certificate and a private key manually that's easy too.
 On macOS it can look like this:
 
 ```bash
-➜  demo-dir ls
-qs-jwt
+➜  demo-dir ll
+total 236448
+-rwxr-xr-x@ 1 goran  staff   115M Mar 14 06:56 qs-jwt
+➜  demo-dir
 ➜  demo-dir openssl genrsa -out privatekey.pem 4096
 Generating RSA private key, 4096 bit long modulus
-...................................................................................................................................................................................................++
-.++
+.......................................................................................................................................................................................................................................................................................................................................++
+...............................................................++
 e is 65537 (0x10001)
+➜  demo-dir
 ➜  demo-dir openssl req -new -x509 -key privatekey.pem -out publickey.cer -days 1825
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
@@ -225,8 +232,12 @@ Organization Name (eg, company) []:.
 Organizational Unit Name (eg, section) []:.
 Common Name (eg, fully qualified host name) []:qs-jwt
 Email Address []:.
-➜  demo-dir ls
-privatekey.pem publickey.cer  qs-jwt
+➜  demo-dir
+➜  demo-dir ll
+total 236464
+-rw-r--r--  1 goran  staff   3.2K Mar 14 07:00 privatekey.pem
+-rw-r--r--  1 goran  staff   1.6K Mar 14 07:01 publickey.cer
+-rwxr-xr-x@ 1 goran  staff   115M Mar 14 06:56 qs-jwt
 ➜  demo-dir
 ```
 
@@ -250,7 +261,16 @@ Command (assuming the qs-jwt binary is available in the current directory):
 
 ![qs-jwt running on macOS, using existing key file](./docs/img/qs-jwt-macos-1.png "qs-jwt running on macOS, using existing key file")
 
-### Running qs-jwt on Windows Server 2016
+### Running on Windows Server 2016
+
+This example uses a certificate and private key that were created using openssl, as describe above.
+
+Remember: Don't forget to unblock the downloaded qs-jwt ZIP file before unzipping it. Failing to unblock it may prevent proper execution of qs-jwt.exe.
+
+`qs-jwt.exe create-qseow --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --cert-privatekey-file privatekey.pem --groups group1 "group 2" --expires 365d`
+
+![qs-jwt running on Windows Server 2016, using existing key file](./docs/img/qs-jwt-winsrv2016-1.png "qs-jwt running on Windows Server 2016, using existing key file")
+
 
 ## QSEoW: Create JWTs using existing certificate and private passed as parameters
 
@@ -273,9 +293,22 @@ Command (assuming the qs-jwt binary is available in the current directory):
 
 `export QSJWTPRIVKEY=$(cat ./privatekey.pem)`
 
-`./qs-jwt create-qseow --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --cert-privatekey-file privatekey.pem --groups group1 "group 2" --expires 365d`
+`./qs-jwt create-qseow --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --cert-privatekey "$QSJWTPRIVKEY" --groups group1 "group 2" --expires 365d`
 
 ![qs-jwt running on macOS, using existing key file](./docs/img/qs-jwt-macos-2.png "qs-jwt running on macOS, using existing key file")
+
+### Running on Windows Server 2016
+
+This example uses a certificate and private key that were created using openssl, as describe above.  
+Here powershell is used to run qs-jwt, with the private key stored in an environment variable.
+
+Remember: Don't forget to unblock the downloaded qs-jwt ZIP file before unzipping it. Failing to unblock it may prevent proper execution of qs-jwt.exe.
+
+`$QSJWTPRIVKEY = Get-Content .\privatekey.pem -Raw`
+
+`.\qs-jwt.exe create-qseow --userdir GRUSGRUS --userid anna --username 'Anna Anderson' --useremail 'anna@grusgrus.com' --audience hdJh34wkK --cert-privatekey "$QSJWTPRIVKEY" --groups group1 'group 2' --expires 365d`
+
+![qs-jwt running on Windows Server 2016, using existing key file](./docs/img/qs-jwt-winsrv2016-2.png "qs-jwt running on Windows Server 2016, using existing key file")
 
 ## QSEoW: Create new certificate and key pair, then create JWT
 
@@ -308,9 +341,26 @@ Command (assuming the qs-jwt binary is available in the current directory):
 
 ![qs-jwt running on macOS, creating new cert and key](./docs/img/qs-jwt-macos-3.png "qs-jwt running on macOS, creating new cert and key")
 
+### Running on Windows Server 2016
+
+Here cmd.exe is used to run qs-jwt, Powershell works equally well.
+
+Remember: Don't forget to unblock the downloaded qs-jwt ZIP file before unzipping it. Failing to unblock it may prevent proper execution of qs-jwt.exe.
+
+`.\qs-jwt.exe create-qseow --userdir GRUSGRUS --userid anna --username "Anna Anderson" --useremail "anna@grusgrus.com" --audience hdJh34wkK --cert-create true --cert-create-expires-days 400 --cert-file-prefix "qsjwt_" --groups group1 "group 2" --expires 365d`
+
+![qs-jwt running on Windows Server 2016, creating new cert and key](./docs/img/qs-jwt-winsrv2016-3.png "qs-jwt running on Windows Server 2016, creating new cert and key")
+
 # Using JWTs in security rules
 
-<TODO>
+Any claim embedded in the JWT can be used in QSEoW security rules.
+
+The claims are available as `user.environment.<claim name>` in the security rules.  
+You must write the security rule manually in the Conditions text box (i.e. the authoring tool doesn't work for JWT claims).
+
+A rule that gives access to a specific stream for all JWTs where the `group` claim is "group 2" can look like this:
+
+![QSEoW security rule using data from a JWT](./docs/img/qs-jwt-rule-1.png "QSEoW security rule using data from a JWT")
 
 # Logging
 
