@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.4](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.3...qs-jwt-v1.5.4) (2022-03-14)
+
+
+### Bug Fixes
+
+* Remove --target option ([33e88ce](https://github.com/ptarmiganlabs/qs-jwt/commit/33e88cef6665721728d61718bd9559d159e8280c))
+
 ### [1.5.3](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.2...qs-jwt-v1.5.3) (2022-03-13)
 
 
