@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.6.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.4...qs-jwt-v1.6.0) (2022-03-14)
+
+
+### Features
+
+* Removed unneeded libs from package.json ([4f84263](https://github.com/ptarmiganlabs/qs-jwt/commit/4f842635b66ca9185321c2ca7cfcff09f738fdab))
+
+
+### Bug Fixes
+
+* Change CI pipeline name ([f6e06b2](https://github.com/ptarmiganlabs/qs-jwt/commit/f6e06b2fe4d148bd05b219b9805d6896d8dfe36e))
+
+
+### Documentation
+
+* Towards release.. ([cbdbb9f](https://github.com/ptarmiganlabs/qs-jwt/commit/cbdbb9f0670fe32027b04c414debcade16996e06))
+
 ### [1.5.4](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.3...qs-jwt-v1.5.4) (2022-03-14)
 
 
