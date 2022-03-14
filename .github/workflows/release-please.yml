@@ -1,4 +1,4 @@
-name: release-please
+name: ci-pipeline
 
 on:
   workflow_dispatch:
