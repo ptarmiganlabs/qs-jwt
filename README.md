@@ -25,7 +25,7 @@ Those tools focus on things such as real-time monitoring of client-managed Qlik 
   - [Command line tool](#command-line-tool)
   - [JWT claims](#jwt-claims)
 - [Commands](#commands)
-  - ["create" command](#create-command)
+  - ["create-qseow" command](#create-qseow-command)
 - [Modes of operation](#modes-of-operation)
   - [QSEoW: Create JWTs using existing certificate and private key files](#qseow-create-jwts-using-existing-certificate-and-private-key-files)
     - [Create a certificate using openssl](#create-a-certificate-using-openssl)
@@ -114,7 +114,8 @@ Make sure to check for new versions (or subscribe to updates) - new features are
 qs-jwt is a command line tool intended to be used from scripts written in Powershell, bash or similar shells.  
 Or just from the command line for one-off creation of JWTs.
 
-Given the above focus on integration in various automation scenarios, all needed information is passed to qs-jwt as parameters and options.  
+Given the above focus on integration in various automation scenarios, all needed information is passed to qs-jwt as parameters and options.
+
 There are thus - by design - no interactive prompts what so ever in qs-jwt.
 
 ## JWT claims
@@ -127,22 +128,22 @@ Claims may sound like a strange term for this, but you can think of it as metada
 Run `qs-jwt --help` to get a list of available commands and options  
 
 ```bash
-➜  qs-jwt ./qs-jwt --help
+➜  demo-dir ./qs-jwt --help
 Usage: qs-jwt [options] [command]
 
-This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (self-managed Qlik Sense).
+This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (self-managed) as well as Qlik Sense Cloud/SaaS.
 The JWTs can be used when accessing Sense APIs from third party applications and services.
-JWTs are usually preferred over certuficates as JWTs embed a specific user, which means access control can be applied.
+JWTs are usually preferred over certuficates as JWTs embed a specific user, which means access control can be applied when JWTs are used.
 
 Options:
   -V, --version           output the version number
   -h, --help              display help for command
 
 Commands:
-  create-qseow [options]  Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows)
-                          or Qlik Cloud. Use --target option to target either platform.
+  create-qseow [options]  Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows) or Qlik
+                          Cloud. Use --target option to target either platform.
   help [command]          display help for command
-➜  qs-jwt
+➜  demo-dir
 ```
 
 ## "create-qseow" command
@@ -151,30 +152,29 @@ Purpose: To create a new JWT.
 Syntax:
 
 ```bash
-➜  qs-jwt ./qs-jwt create-qseow --help
+➜  demo-dir ./qs-jwt create-qseow --help
 Usage: qs-jwt create-qseow [options]
 
 Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows) or Qlik Cloud. Use --target option to target either platform.
 
 Options:
-  --loglevel <level>                 Logging level (choices: "error", "warning", "info", "verbose", "debug", default:
-                                     "info")
+  --loglevel <level>                 Logging level (choices: "error", "warning", "info", "verbose", "debug", default: "info")
   --userdir <directory>              user directory (e.g. MYDIRNAME) that will be embedded in the JWT
   --userid <userid>                  user ID (e.g. johnsmith) that will be embedded in the JWT
   --username <name>                  User name (e.g. John Smith) that will be embedded in the JWT
   --useremail <email>                Email address that will be embedded in the JWT
   --groups <groups...>               Which groups the user dir/ID embedded in the JWT should be
-  --expires <time>                   Time during which the JWT will be valid. Examples: 60m (60 minutes), 48h (48
-                                     hours), 365d (365 days), 5y (5 years)
-  --audience <audience>              JWT audience field. Audience in JWT must match the audience defined in the QSEoW
-                                     virtual proxy being used
+  --expires <time>                   Time during which the JWT will be valid. Examples: 60m (60 minutes), 48h (48 hours), 365d (365
+                                     days), 5y (5 years)
+  --audience <audience>              JWT audience field. Audience in JWT must match the audience defined in the QSEoW virtual proxy
+                                     being used
   --cert-privatekey-file <file>      File containing private key of certificate that will be used to sign the JWT
   --cert-privatekey <privatekey>     Certificate private key of certificate that will be used to sign the JWT.
   --cert-create [true|false]         Should a new certificate be created? (choices: "true", "false", default: "false")
   --cert-file-prefix <prefix>        Prefix to place before certificate file names (default: "")
   --cert-create-expires-days <days>  Number of days the new certificate should be valid for
   -h, --help                         display help for command
-➜  qs-jwt
+➜  demo-dir
 ```
 
 # Modes of operation
@@ -203,12 +203,14 @@ If you want to create a certificate and a private key manually that's easy too.
 On macOS it can look like this:
 
 ```bash
-➜  qs-jwt openssl genrsa -out privatekey.pem 4096
+➜  demo-dir ls
+qs-jwt
+➜  demo-dir openssl genrsa -out privatekey.pem 4096
 Generating RSA private key, 4096 bit long modulus
-..............................++
-..................................++
+...................................................................................................................................................................................................++
+.++
 e is 65537 (0x10001)
-➜  qs-jwt openssl req -new -x509 -key privatekey.pem -out publickey.cer -days 1825
+➜  demo-dir openssl req -new -x509 -key privatekey.pem -out publickey.cer -days 1825
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -223,13 +225,9 @@ Organization Name (eg, company) []:.
 Organizational Unit Name (eg, section) []:.
 Common Name (eg, fully qualified host name) []:qs-jwt
 Email Address []:.
-➜  qs-jwt ls -la
-total 16
-drwxr-xr-x   4 goran  staff   128 Mar 12 20:32 .
-drwxr-xr-x  33 goran  staff  1056 Mar 12 20:31 ..
--rw-r--r--   1 goran  staff  3243 Mar 12 20:32 privatekey.pem
--rw-r--r--   1 goran  staff  1663 Mar 12 20:32 publickey.cer
-➜  qs-jwt
+➜  demo-dir ls
+privatekey.pem publickey.cer  qs-jwt
+➜  demo-dir
 ```
 
 Doing the same on Windows is a bit tricky as openssl is not natively supported on Windows. There are however several projects that make openssl available on Windows, for example [here](https://slproweb.com/products/Win32OpenSSL.html).

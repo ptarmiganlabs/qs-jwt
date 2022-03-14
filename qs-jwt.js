@@ -29,10 +29,8 @@ const program = new Command();
             try {
                 createAssertOptions(options);
 
-                if (options.target === 'qseow') {
-                    const res = await jwtCreateQseow(options, command);
-                    logger.debug(`Call to jwtQseowCreate succeeded: ${res}`);
-                }
+                const res = await jwtCreateQseow(options, command);
+                logger.debug(`Call to jwtQseowCreate succeeded: ${res}`);
             } catch (err) {
                 logger.error(`MAIN jwt create: ${err}`);
             }
