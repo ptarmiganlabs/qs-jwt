@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.3](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.2...qs-jwt-v1.5.3) (2022-03-13)
+
+
+### Bug Fixes
+
+* Remove uploading of win artifacts ([5018be9](https://github.com/ptarmiganlabs/qs-jwt/commit/5018be904a946691189b2d4b7bf9c6fed02c4971))
+
 ### [1.5.2](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.1...qs-jwt-v1.5.2) (2022-03-12)
 
 
