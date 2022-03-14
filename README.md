@@ -6,7 +6,8 @@
 <a href="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/release-please.yml"><img src="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/release-please.yml/badge.svg?branch=main" alt="Continuous Integration"></a>
 </p>
 
-A cross platform, command line tool for creating JWTs (=JSON Web Tokens) that can be used to authenticate with Qlik Sense.
+A cross platform, command line tool for creating JWTs (=JSON Web Tokens) that can be used to authenticate with Qlik Sense.  
+qs-jwt is available on Windows, Linux and macOS.
 
 Currently JWTs for Qlik Sense Enterprise on Windows (QSEoW) can be created.  
 Support for Qlik Sense Cloud JWTs coming soon.
@@ -39,7 +40,8 @@ Those tools focus on things such as real-time monitoring of client-managed Qlik 
     - [Running on Windows Server 2016](#running-on-windows-server-2016-2)
 - [Using JWTs in security rules](#using-jwts-in-security-rules)
 - [Logging](#logging)
-- [Security and isclosure](#security-and-isclosure)
+- [Security and disclosure](#security-and-disclosure)
+  - [Platform specific security information](#platform-specific-security-information)
 
 ---
 
@@ -64,7 +66,7 @@ So what does this mean in a Qlik Sense context?
 Let's break it down a bit:
 
 - A Qlik Sense user directory and ID is embedded in the JWT.
-- Once a tool presents the JWT to a Qlik Sense API, Sense will be able to use the user dir/id in the JWT to first authenticate the user, then also decide (using security rules) what the user should be allowed to do in Sense.
+- Once a tool presents the JWT to a Qlik Sense API, Sense will be able to use the user dir/ID in the JWT to first authenticate the user, then also decide (using security rules) what the user should be allowed to do in Sense.
 - Each JWT is configured with an expiry time. It's a good security principle to keep the expiry dates short.
 - Additional metadata can be included in the JWT. Example include email address, real name, group belonging, access roles etc. This information is available in Sense security rules.
 - The JWT is not encrypted, but it is cryptographically signed. This means that it's not possible to modify or tamper with the JWT once it's been created.
@@ -368,7 +370,7 @@ Possible logging levels are `error`, `warning`, `info`, `verbose`, `debug`.
 
 Default logging level is `info`
 
-# Security and isclosure
+# Security and disclosure
 
 qs-jwt is open source and you have access to all source code.  
 It is *your own* responsibility to determine if qs-jwt is suitable for *your* use case.  
@@ -376,3 +378,8 @@ The creators of qs-jwt, including Ptarmigan Labs, Göran Sander or any other con
 If you have security concerns or ideas around qs-jwt, please get involved in the project and contribute to making it better!
 
 > If you discover a serious bug with qs-jwt that may pose a security problem, please disclose it confidentially to security@ptarmiganlabs.com first, so it can be assessed and hopefully fixed prior to being exploited. Please do not raise GitHub issues for security-related doubts or problems.
+
+## Platform specific security information
+
+The macOS version is signed and notarized by Apple's standard process.  
+A warning may still be shown first time the app is started, but that is normal.
