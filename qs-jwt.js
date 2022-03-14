@@ -71,7 +71,7 @@ const program = new Command();
         )
         .option(
             '--cert-privatekey <privatekey>',
-            'Certificate private key of certificate that will be used to sign the JWT.'
+            'Private key of certificate that will be used to sign the JWT.'
         )
         .addOption(
             new Option('--cert-create [true|false]', 'Should a new certificate be created?')
