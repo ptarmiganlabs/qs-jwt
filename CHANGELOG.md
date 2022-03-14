@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.6.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.6.0...qs-jwt-v1.6.1) (2022-03-14)
+
+
+### Documentation
+
+* Better descr for --cert-privatekey ([33d6f53](https://github.com/ptarmiganlabs/qs-jwt/commit/33d6f53706c0afcd49e9932bf2bda656391f774e)), closes [#20](https://github.com/ptarmiganlabs/qs-jwt/issues/20)
+* Fixed typos in README ([75afac8](https://github.com/ptarmiganlabs/qs-jwt/commit/75afac8a9ded89648214554d15e6399fb9bfbdde))
+
 ## [1.6.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.5.4...qs-jwt-v1.6.0) (2022-03-14)
 
 
