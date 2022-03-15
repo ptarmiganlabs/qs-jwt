@@ -98,7 +98,7 @@ Drawbacks of JWTs
 
 JWTs can be created using various online tools.
 
-This can be fine during development and testing, but in production scenarious it's not be ideal (should not be accepted - period!) to enter user credentials in some random web page.  
+This can be fine during development and testing, but in production scenarious it's not ideal (should not be accepted - period!) to enter user credentials in some random web page.  
 
 If limited to web based JWT tools it is also difficult or impossible to automate creation of JWTs.  
 While not a problem for some it may be a showstopper for others, for example if the JWTs are created with short expiry times and/or need to be automatically recreated.
