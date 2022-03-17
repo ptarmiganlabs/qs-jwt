@@ -20,10 +20,12 @@ const program = new Command();
         );
 
     program
+        // -----------------------------
+        // create-qseow
         .command('create-qseow')
         .allowExcessArguments(false)
         .description(
-            'Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows) or Qlik Cloud. Use --target option to target either platform.'
+            'Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows).'
         )
         .action(async (options, command) => {
             try {
