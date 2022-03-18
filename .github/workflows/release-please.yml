@@ -27,10 +27,10 @@ jobs:
         with:
           command: manifest  
 
-      - name: Show output from Release-Please 1
-        continue-on-error: true
-        run: |
-          echo "${{ toJSON(steps.release.outputs) }}"
+      # - name: Show output from Release-Please 1
+      #   continue-on-error: true
+      #   run: |
+      #     echo "${{ toJSON(steps.release.outputs) }}"
 
   #     # - name: Show output from Release-Please 2
   #     #   continue-on-error: true
