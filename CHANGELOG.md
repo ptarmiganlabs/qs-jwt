@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.7.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.6.1...qs-jwt-v1.7.0) (2022-03-18)
+
+
+### Features
+
+* Add support for QS Cloud JWTs ([6597dfa](https://github.com/ptarmiganlabs/qs-jwt/commit/6597dfa03bca75abe7a228d9b8f23618bf522b4d)), closes [#27](https://github.com/ptarmiganlabs/qs-jwt/issues/27)
+
+
+### Bug Fixes
+
+* Description of create-qseow command ([bd78de1](https://github.com/ptarmiganlabs/qs-jwt/commit/bd78de1598a6e4cd301655c629168ffbe38ebd81)), closes [#26](https://github.com/ptarmiganlabs/qs-jwt/issues/26)
+
+
+### Miscellaneous
+
+* **deps:** update actions/checkout action to v3 ([4daf4db](https://github.com/ptarmiganlabs/qs-jwt/commit/4daf4dbf5df299c01a6cac91553b7329becc15ed))
+
 ### [1.6.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.6.0...qs-jwt-v1.6.1) (2022-03-14)
 
 
