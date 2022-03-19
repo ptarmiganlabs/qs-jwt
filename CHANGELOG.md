@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.10.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.0...qs-jwt-v1.10.1) (2022-03-19)
+
+
+### Documentation
+
+* Added QS Cloud related docs ([49ebca3](https://github.com/ptarmiganlabs/qs-jwt/commit/49ebca32a6d3d0b3a89b318f81046390326f4840))
+
 ## [1.10.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.9.0...qs-jwt-v1.10.0) (2022-03-18)
 
 
