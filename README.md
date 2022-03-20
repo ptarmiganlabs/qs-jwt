@@ -14,9 +14,10 @@ JWTs for both client-managed Qlik Sense Enterprise on Windows (QSEoW) and Qlik S
 qs-jwt nicely complements the more operationally focused open source tools in the [Butler family](https://github.com/ptarmiganlabs).  
 Those tools focus on things such as real-time monitoring of client-managed Qlik Sense environments, flexible and powerful alerts/notifications when reloads fail, automatically creating sheet thumbnails and much more. More info at [https://github.com/ptarmiganlabs](https://github.com/ptarmiganlabs).
 
-## Ptarmigan Labs
+### Ptarmigan Labs
 
-qs-jwt is sponsored by Ptarmigan Labs, which is a Swedish consulting company specialising in advanced Qlik Sense development. More info at [ptarmiganlabs.com](https://info.ptarmiganlabs.com/g3c1f1).
+qs-jwt is sponsored by Ptarmigan Labs, a Swedish consulting company specialising in advanced Qlik Sense development.  
+More info at [ptarmiganlabs.com](https://info.ptarmiganlabs.com/g3c1f1).
 
 <h2>Table of contents</h2>
 
