@@ -1,5 +1,14 @@
 # Changelog
 
+### [1.10.2](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.1...qs-jwt-v1.10.2) (2022-03-28)
+
+
+### Miscellaneous
+
+* **deps:** bump minimist from 1.2.5 to 1.2.6 ([8e08bc2](https://github.com/ptarmiganlabs/qs-jwt/commit/8e08bc29cfb288c83fcfc318ff716b591a9774c6))
+* **deps:** bump node-forge from 1.2.1 to 1.3.0 ([550398f](https://github.com/ptarmiganlabs/qs-jwt/commit/550398f6f7e3226d875c7416dadcccff7284377f))
+* **deps:** update dependency prettier to v2.6.1 ([533fa79](https://github.com/ptarmiganlabs/qs-jwt/commit/533fa79cbc1f3796023a8280e5aecd17a054ad86))
+
 ### [1.10.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.0...qs-jwt-v1.10.1) (2022-03-19)
 
 
