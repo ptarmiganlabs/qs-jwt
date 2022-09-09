@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.3](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.2...qs-jwt-v1.10.3) (2022-09-09)
+
+
+### Bug Fixes
+
+* **deps:** Update depdencies ([2778496](https://github.com/ptarmiganlabs/qs-jwt/commit/27784966c35aca4329d29d519f38b475822d9f4b))
+* **deps:** Update ESLint dependency ([f086208](https://github.com/ptarmiganlabs/qs-jwt/commit/f0862084dad4454deb8341d54fc301ad43850fc1))
+
+
+### Miscellaneous
+
+* **deps:** update dependency prettier to v2.6.2 ([7825397](https://github.com/ptarmiganlabs/qs-jwt/commit/7825397df6639bbdc942a3aa2e6b1e02687eaee6))
+* **deps:** update github/codeql-action action to v2 ([f3f0010](https://github.com/ptarmiganlabs/qs-jwt/commit/f3f00101d3abbffe339db06d0a5ced57025f9eb3))
+* **deps:** update node.js to v18 ([3e75f0c](https://github.com/ptarmiganlabs/qs-jwt/commit/3e75f0c0173a7cfdf925b4c1ee4d177c6ebd54ae))
+
 ### [1.10.2](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.1...qs-jwt-v1.10.2) (2022-03-28)
 
 
