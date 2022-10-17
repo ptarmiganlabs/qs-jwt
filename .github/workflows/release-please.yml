@@ -97,7 +97,6 @@ jobs:
           pkg --config ./package.json --output release/linux/${DIST_FILE_NAME} -t node16-linux-x64 qs-jwt.js
           pkg --config ./package.json --output release/macos/${DIST_FILE_NAME} -t node16-macos-x64 qs-jwt.js
           pkg --config ./package.json --output release/win/${DIST_FILE_NAME}.exe -t node16-win-x64 qs-jwt.js
-
         
       - name: Debug
         if: ${{ steps.release.outputs.releases_created }}
@@ -107,6 +106,7 @@ jobs:
           ls -la release/macos
           ls -la release/win
           ls -la release/linux
+
       - name: VirusTotal Scan
         if: ${{ steps.release.outputs.releases_created }}
         uses: crazy-max/ghaction-virustotal@v3
@@ -117,17 +117,6 @@ jobs:
             ./release/macos/*
             ./release/win/*
             ./release/linux/*
-
-      # TODO
-      # - name: Compress binaries
-      #   if: ${{ steps.release.outputs.releases_created }}
-      #     # zip release-zip/${DIST_FILE_NAME}-alpine.zip release/alpine/${DIST_FILE_NAME}
-      #   run: |
-      #     ls -la
-      #     mkdir release-zip
-      #     zip --junk-paths release-zip/${DIST_FILE_NAME}-linux.zip release/linux/${DIST_FILE_NAME}
-      #     zip --junk-paths release-zip/${DIST_FILE_NAME}-win.zip release/win/${DIST_FILE_NAME}.exe
-
 
       - name: Upload macOS build artifacts
         if: ${{ steps.release.outputs.releases_created }}
@@ -149,22 +138,6 @@ jobs:
         with:
           name: binaries-win
           path: release/win/*
-
-      # TODO
-      # - name: Upload to existing release
-      #   if: ${{ steps.release.outputs.releases_created }}
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     allowUpdates: true
-      #     omitBodyDuringUpdate: true
-      #     omitNameDuringUpdate: true
-      #     # artifactContentType: application/zip
-      #     artifactContentType: raw
-      #     draft: true
-      #     tag: ${{ steps.release.outputs.tag_name }}
-      #     artifacts: release-zip/*
-      #     token: ${{ github.token }}
-
 
   release-macos:
     needs: release-please
