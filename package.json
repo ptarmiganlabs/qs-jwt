@@ -37,6 +37,6 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
-    "prettier": "^2.7.1"
+    "prettier": "2.7.1"
   }
 }
