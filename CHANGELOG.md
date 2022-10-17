@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.11.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.3...qs-jwt-v1.11.0) (2022-10-17)
+
+
+### Features
+
+* Add links to security scans from GH release notes ([ee9f370](https://github.com/ptarmiganlabs/qs-jwt/commit/ee9f3705bca5b43b0d6813f852511f4281ed672d))
+* Sign Windows binaries + refactor CI pipeline to be in line with other Butler tools ([c58e423](https://github.com/ptarmiganlabs/qs-jwt/commit/c58e423b3a9244843ea950d4d94148fdd2cb025c))
+
+
+### Miscellaneous
+
+* **deps:** Update dependencies ([622ddfc](https://github.com/ptarmiganlabs/qs-jwt/commit/622ddfcc6d8739b609d20238255bd5384768356e))
+
 ## [1.10.3](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.2...qs-jwt-v1.10.3) (2022-09-09)
 
 
