@@ -1,5 +1,5 @@
 # Build Docker image
-FROM node:18-bullseye-slim
+FROM node:19-bullseye-slim
 
 # Add metadata about the image
 LABEL maintainer="Göran Sander mountaindude@ptarmiganlabs.com"
