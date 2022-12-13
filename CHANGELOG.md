@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.0...qs-jwt-v1.11.1) (2022-12-13)
+
+
+### Miscellaneous
+
+* **deps:** Update dependencies to stay secure ([b0f339f](https://github.com/ptarmiganlabs/qs-jwt/commit/b0f339f94a2da89758f8ab1e7ec2774e0ad6d943))
+* **deps:** update node.js to v19 ([0bf08c4](https://github.com/ptarmiganlabs/qs-jwt/commit/0bf08c4337488deed2663efae641e3e94ed74ef3))
+
 ## [1.11.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.10.3...qs-jwt-v1.11.0) (2022-10-17)
 
 
