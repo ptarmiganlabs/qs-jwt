@@ -24,7 +24,7 @@
   "homepage": "https://github.com/ptarmiganlabs/qs-jwt#readme",
   "dependencies": {
     "commander": "^9.4.1",
-    "eslint": "^8.25.0",
+    "eslint": "^8.29.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
@@ -34,9 +34,9 @@
     "node-forge": "^1.3.1",
     "uid-safe": "^2.1.5",
     "winston": "^3.8.2",
-    "yargs": "^17.6.0"
+    "yargs": "^17.6.2"
   },
   "devDependencies": {
-    "prettier": "^2.7.1"
+    "prettier": "^2.8.1"
   }
 }
