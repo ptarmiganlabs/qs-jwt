@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.11.2](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.1...qs-jwt-v1.11.2) (2023-01-11)
+
+
+### Miscellaneous
+
+* **deps:** Update dependencies to stay safe and secure ([59ac214](https://github.com/ptarmiganlabs/qs-jwt/commit/59ac21486312301720008f3868e8d63e66f6036a))
+* **deps:** Update JWT library to get latest security patches ([3391795](https://github.com/ptarmiganlabs/qs-jwt/commit/3391795d8ba615a23b8e896d491b8c97c775b3ec))
+* **security:** Auto-scan dependencies ([9be080b](https://github.com/ptarmiganlabs/qs-jwt/commit/9be080b7b0b8b784b76d475cf39db91b5414931c))
+
 ## [1.11.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.0...qs-jwt-v1.11.1) (2022-12-13)
 
 
