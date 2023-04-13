@@ -4,6 +4,7 @@
 <a href="https://github.com/ptarmiganlabs/qs-jwt">
 <img src="https://img.shields.io/badge/Source---" alt="Source"></a>
 <a href="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/release-please.yml"><img src="https://github.com/ptarmiganlabs/qs-jwt/actions/workflows/release-please.yml/badge.svg?branch=main" alt="Continuous Integration"></a>
+<a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed." /></a>
 </p>
 
 A cross platform, command line tool for creating JWTs (=JSON Web Tokens) that can be used to authenticate with Qlik Sense.  
@@ -159,7 +160,7 @@ Usage: qs-jwt [options] [command]
 
 This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (client-managed) as well as Qlik Sense Cloud (SaaS).
 The JWTs can be used when accessing Sense APIs from third party applications and services.
-JWTs are usually preferred over certuficates as JWTs embed a specific user, which means access control can be applied when JWTs are used.
+JWTs are usually preferred over certificates as JWTs embed a specific user, which means access control can be applied when JWTs are used.
 
 Options:
   -V, --version             output the version number
