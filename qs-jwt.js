@@ -20,7 +20,7 @@ const program = new Command();
         .version(appVersion)
         .name('qs-jwt')
         .description(
-            'This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (self-managed) as well as Qlik Sense Cloud/SaaS.\nThe JWTs can be used when accessing Sense APIs from third party applications and services.\nJWTs are usually preferred over certuficates as JWTs embed a specific user, which means access control can be applied when JWTs are used. '
+            'This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (self-managed) as well as Qlik Sense Cloud/SaaS.\nThe JWTs can be used when accessing Sense APIs from third party applications and services.\nJWTs are usually preferred over certificates as JWTs embed a specific user, which means access control can be applied when JWTs are used. '
         );
 
     // -----------------------------
