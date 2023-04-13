@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.11.3](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.2...qs-jwt-v1.11.3) (2023-04-13)
+
+
+### Bug Fixes
+
+* Fixed typo in about text ([556e95b](https://github.com/ptarmiganlabs/qs-jwt/commit/556e95b3fbf89d9add5aa4c4987c34f581a0564c)), closes [#74](https://github.com/ptarmiganlabs/qs-jwt/issues/74)
+
+
+### Miscellaneous
+
+* **deps-dev:** bump prettier from 2.8.2 to 2.8.4 ([e042eb0](https://github.com/ptarmiganlabs/qs-jwt/commit/e042eb0cc19a42452fa4197c76005548b06f855c))
+* **deps:** bump eslint from 8.31.0 to 8.35.0 ([346bb1f](https://github.com/ptarmiganlabs/qs-jwt/commit/346bb1f06bf09adae45c93ab1b4d5d0e28186fa3))
+* **deps:** bump yargs from 17.6.2 to 17.7.1 ([315b511](https://github.com/ptarmiganlabs/qs-jwt/commit/315b511be1b19331088a1e6385d9415081d7b04a))
+* **deps:** Updated dependencies to stay safe and secure ([7f30517](https://github.com/ptarmiganlabs/qs-jwt/commit/7f305171ca8ea644e4580bf2ce68134ee08349da))
+
 ## [1.11.2](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.1...qs-jwt-v1.11.2) (2023-01-11)
 
 
