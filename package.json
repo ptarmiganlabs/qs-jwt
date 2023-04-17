@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/ptarmiganlabs/qs-jwt#readme",
   "dependencies": {
-    "commander": "^10.0.0",
+    "commander": "^10.0.1",
     "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
