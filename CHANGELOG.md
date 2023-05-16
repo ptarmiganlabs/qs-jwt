@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.4](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.3...qs-jwt-v1.11.4) (2023-05-16)
+
+
+### Miscellaneous
+
+* **deps:** Update dependencies to stay safe and secure ([59fc425](https://github.com/ptarmiganlabs/qs-jwt/commit/59fc42588821a387bc52657ac75bdaae6278e442))
+* **deps:** update node.js to v20 ([6083884](https://github.com/ptarmiganlabs/qs-jwt/commit/60838847000d234e81b4c2446441940f9fc9823c))
+
 ## [1.11.3](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.2...qs-jwt-v1.11.3) (2023-04-13)
 
 
