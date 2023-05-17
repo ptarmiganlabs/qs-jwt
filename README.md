@@ -18,7 +18,7 @@ Those tools focus on things such as real-time monitoring of client-managed Qlik 
 ### Ptarmigan Labs
 
 qs-jwt is sponsored by Ptarmigan Labs, a Swedish consulting company specialising in advanced Qlik Sense development.  
-More info at [ptarmiganlabs.com](https://info.ptarmiganlabs.com/g3c1f1).
+More info at [ptarmiganlabs.com](https://ptarmiganlabs.com) where you can also [sign up for the newsletter](https://ptarmiganlabs.com/#/portal/signup) that will give all Qlik related updates straight to your inbox.
 
 <h2>Table of contents</h2>
 
@@ -130,7 +130,8 @@ While not a problem for some it may be a showstopper for others, for example if 
 qs-jwt does not need to be installed.  
 It is a standalone, cross-platform executable that is just downloaded and executed.
 
-The latest version is always available from the [download page](https://github.com/ptarmiganlabs/qs-jwt/releases).  
+The latest version is always available from the [download page](https://github.com/ptarmiganlabs/qs-jwt/releases).
+
 Make sure to check for new versions (and star the [GitHub repositry](https://github.com/ptarmiganlabs/qs-jwt) and subscribe to updates!) - new features are added and security updates applied.
 
 # qs-jwt concepts
