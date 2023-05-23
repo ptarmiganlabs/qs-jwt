@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.11.5](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.4...qs-jwt-v1.11.5) (2023-05-23)
+
+
+### Documentation
+
+* Update and clarify qs-jwt usage instructions ([47ad03a](https://github.com/ptarmiganlabs/qs-jwt/commit/47ad03ac8d486b7b6524dac735138fc3d17307a8))
+
+
+### Miscellaneous
+
+* **deps:** Update dependencies to stay safe and secure ([974e06a](https://github.com/ptarmiganlabs/qs-jwt/commit/974e06a6bd5aaaa408df5b3a86a8fc586aa5408a))
+
 ## [1.11.4](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.3...qs-jwt-v1.11.4) (2023-05-16)
 
 
