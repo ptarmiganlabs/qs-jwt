@@ -593,7 +593,7 @@ Powershell on macOS:
 
 ## Qlik Sense Cloud
 
-As of March 2022 using JWTs with Qlik Sense Cloud is not officially supported. It can however be enabled on a per-tenant basis by Qlik.
+These days (May 2023) JWTs are enabled on all Qlik Cloud tentants by default. In the past this feature was enabled for tenants only on a case-by-case basis - that is no longer the case though.
 
 Qlik Sense Cloud is quite flexible when it comes to authentication and Identify Providers (IdPs) and there are officially supported options (e.g. some OAuth based variant) that can probably be used in most scenarios where JWTs are considered.  
 Still, JWTs are a simple and proven concept that has its own advantages.
