@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.11.6](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.5...qs-jwt-v1.11.6) (2024-03-19)
+
+
+### Miscellaneous
+
+* Add Snyk vulnerability scanning ([209f5c6](https://github.com/ptarmiganlabs/qs-jwt/commit/209f5c67a57b84f5d6aaff6b5bf5b25f1693fa6b))
+* **deps:** update actions/checkout action to v4 ([1fcc37a](https://github.com/ptarmiganlabs/qs-jwt/commit/1fcc37a704699e90fb1bb6f0750cf513f39532c2))
+* **deps:** update github/codeql-action action to v3 ([59b1888](https://github.com/ptarmiganlabs/qs-jwt/commit/59b188875eacc2fbe8afd09213dee12ce7791ccf))
+* **deps:** Updated dependencies ([2a291aa](https://github.com/ptarmiganlabs/qs-jwt/commit/2a291aad30409e7c7aa830fbf5b282cd411396d0))
+* Update to latest build tools ([1e718f3](https://github.com/ptarmiganlabs/qs-jwt/commit/1e718f3c24e313248b53743f659216f251a3efa0))
+
+
+### Refactoring
+
+* Tidy up source code ([0762b88](https://github.com/ptarmiganlabs/qs-jwt/commit/0762b883846f34c82c8c2abc8aaedbbb9bd3f429))
+
 ## [1.11.5](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.4...qs-jwt-v1.11.5) (2023-05-23)
 
 ### Documentation
