@@ -256,8 +256,6 @@ jobs:
 
           # Add additional directories & files to the created zip file, if any
 
-          Compress-Archive -Path "./config" -Update -DestinationPath "./${env:DIST_FILE_NAME}-${{ needs.release-please.outputs.release_tag_name }}-win.zip"
-
       - name: Upload to existing release
         uses: ncipollo/release-action@v1
         with:
@@ -344,11 +342,6 @@ jobs:
 
       - name: Compress release binary
         run: |
-          # Compress insider's build
-          # Include following directories & files in the created archive file.
-          # - ./src/config/log_appender_xml
-          # - ./src/config⁄production_template.yaml
-
           ls -la
           zip -9 -r ./${DIST_FILE_NAME}-${{ needs.release-please.outputs.release_tag_name }}-linux.zip ${DIST_FILE_NAME}
 
