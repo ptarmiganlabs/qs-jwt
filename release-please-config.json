@@ -1,32 +1,39 @@
 {
   "release-type": "node",
   "draft": true,
+  "release-search-depth": 10,
+  "commit-search-depth": 200,
   "changelog-sections": [
-    {
-      "type": "feat",
-      "section": "Features",
-      "hidden": false
-    },
-    {
-      "type": "fix",
-      "section": "Bug Fixes",
-      "hidden": false
-    },
-    {
-      "type": "chore",
-      "section": "Miscellaneous",
-      "hidden": false
-    },
-    {
-      "type": "refactor",
-      "section": "Refactoring",
-      "hidden": true
-    },
-    {
-      "type": "docs",
-      "section": "Documentation",
-      "hidden": false
-    }
+      {
+          "type": "feat",
+          "section": "Features",
+          "hidden": false
+      },
+      {
+          "type": "fix",
+          "section": "Bug Fixes",
+          "hidden": false
+      },
+      {
+          "type": "chore",
+          "section": "Miscellaneous",
+          "hidden": false
+      },
+      {
+          "type": "refactor",
+          "section": "Refactoring",
+          "hidden": false
+      },
+      {
+          "type": "docs",
+          "section": "Documentation",
+          "hidden": false
+      },
+      {
+          "type": "build",
+          "section": "Miscellaneous",
+          "hidden": false
+      }
   ],
   "packages": {
     ".": {
