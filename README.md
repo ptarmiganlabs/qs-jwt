@@ -514,7 +514,7 @@ $QSJWTPRIVKEY = Get-Content .\privatekey.pem -Raw
 
 ## QS Cloud: Create new certificate and key pair, then create JWT
 
-![qs-jwt creating both new cert, keys and JWT](./docs/img/qs-jwt-qscloud-new-cert-1.png "qs-jwt creating both new cert, keys and JWT")
+![qs-jwt creating both new cert, keys and JWT](./docs/img/qs-jwt-qseow-new-cert-1.png "qs-jwt creating both new cert, keys and JWT")
 
 If you **do not** have a certificate with associated private key (PEM encoded) qs-jwt can create these for you.  
 You will get a complete public-private key pair + certificate based on the private key, rather than just the private key (which is what qs-jwt uses).
@@ -593,7 +593,7 @@ Powershell on macOS:
 
 ## Qlik Sense Cloud
 
-These days (May 2023) JWTs are enabled on all Qlik Cloud tentants by default. In the past this feature was enabled for tenants only on a case-by-case basis - that is no longer the case though.
+These days (May 2023) JWTs are enabled on all Qlik Cloud tenants by default. In the past this feature was enabled for tenants only on a case-by-case basis - that is no longer the case though.
 
 Qlik Sense Cloud is quite flexible when it comes to authentication and Identify Providers (IdPs) and there are officially supported options (e.g. some OAuth based variant) that can probably be used in most scenarios where JWTs are considered.  
 Still, JWTs are a simple and proven concept that has its own advantages.

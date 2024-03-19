@@ -23,20 +23,21 @@
   },
   "homepage": "https://github.com/ptarmiganlabs/qs-jwt#readme",
   "dependencies": {
-    "commander": "^10.0.1",
-    "eslint": "^8.41.0",
+    "commander": "^12.0.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
     "install": "^0.13.0",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^9.0.2",
     "node-forge": "^1.3.1",
     "uid-safe": "^2.1.5",
-    "winston": "^3.8.2",
+    "winston": "^3.12.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "prettier": "^2.8.8"
+    "prettier": "^3.2.5",
+    "esbuild": "^0.20.0"
   }
 }
