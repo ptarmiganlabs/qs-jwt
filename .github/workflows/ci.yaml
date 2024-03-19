@@ -311,6 +311,26 @@ jobs:
           pwd 
           npm ci --include=prod
 
+      - name: Run Snyk to check for vulnerabilities
+        if: |
+          github.repository_owner == 'ptarmiganlabs'
+        continue-on-error: true
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --file=./package.json --sarif-file-output=snyk.sarif
+          # command: test
+          
+      - name: Upload Snyk result to GitHub Code Scanning
+        if: |
+          github.repository_owner == 'ptarmiganlabs'
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk.sarif
+
+
       - name: Build binaries
         run: |
           ./node_modules/.bin/esbuild ./qs-jwt.js --bundle --external:axios --external:xdg-open --external:enigma.js --outfile=qs-jwt.cjs --format=cjs --platform=node --target=node18 --minify
