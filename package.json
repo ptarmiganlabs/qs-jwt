@@ -42,7 +42,7 @@
     },
     "devDependencies": {
         "prettier": "^3.2.5",
-        "esbuild": "^0.20.0",
+        "esbuild": "^0.21.3",
         "snyk": "^1.1280.0"
     }
 }
