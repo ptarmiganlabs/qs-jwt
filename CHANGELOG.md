@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.12.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.6...qs-jwt-v1.12.0) (2024-06-04)
+
+
+### Features
+
+* Make it possible to only get create JWT as output ([873e5fa](https://github.com/ptarmiganlabs/qs-jwt/commit/873e5faf333625287f7bfbe39e24e4ce4302ae36)), closes [#33](https://github.com/ptarmiganlabs/qs-jwt/issues/33)
+
+
+### Bug Fixes
+
+* Incorrect log level "warning" is now "warn" ([983642f](https://github.com/ptarmiganlabs/qs-jwt/commit/983642f31e1a020f0bad0018ef6cee7b0c6bc327))
+
+
+### Miscellaneous
+
+* **deps:** Update dependencies ([51f44be](https://github.com/ptarmiganlabs/qs-jwt/commit/51f44befe2f7f43eb2a17e8514249098aa614e39))
+* Update to latest version of release-please ([31e0af8](https://github.com/ptarmiganlabs/qs-jwt/commit/31e0af89e1ed8b280214670f387f5c7445b0a495))
+
 ## [1.11.6](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.6...qs-jwt-v1.11.6) (2024-03-19)
 
 
