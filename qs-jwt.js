@@ -43,7 +43,7 @@ const program = new Command();
         })
         .addOption(
             new Option('--loglevel <level>', 'Logging level')
-                .choices(['error', 'warning', 'info', 'verbose', 'debug'])
+                .choices(['error', 'warn', 'info', 'verbose', 'debug'])
                 .default('info')
         )
         .requiredOption(
@@ -87,6 +87,10 @@ const program = new Command();
                 '--cert-create-expires-days <days>',
                 'Number of days the new certificate should be valid for'
             ).argParser(parseInt)
+        )
+        .option(
+            '--minimal-output',
+            'Output only the JWT token, without any additional info. Useful with log level warn or error'
         );
 
     // -----------------------------
@@ -107,7 +111,7 @@ const program = new Command();
         })
         .addOption(
             new Option('--loglevel <level>', 'Logging level')
-                .choices(['error', 'warning', 'info', 'verbose', 'debug'])
+                .choices(['error', 'warn', 'info', 'verbose', 'debug'])
                 .default('info')
         )
         .requiredOption('--useremail <email>', 'Email address that will be embedded in the JWT')
@@ -152,6 +156,10 @@ const program = new Command();
                 '--cert-create-expires-days <days>',
                 'Number of days the new certificate should be valid for'
             ).argParser(parseInt)
+        )
+        .option(
+            '--minimal-output',
+            'Output only the JWT token, without any additional info. Useful with log level warn or error'
         );
 
     // Parse command line params
