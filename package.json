@@ -41,7 +41,7 @@
         "yargs": "^17.7.2"
     },
     "devDependencies": {
-        "esbuild": "^0.21.4",
+        "esbuild": "^0.23.1",
         "prettier": "^3.3.0",
         "snyk": "^1.1291.1"
     }
