@@ -114,8 +114,8 @@ JWT Payload:
   "userDirectory": "MYDIR",
   "name": "John Smith",
   "email": "john.smith@example.com",
-  "iat": 1717948800 (2024-06-09T12:00:00.000Z),
-  "exp": 1717952400 (2024-06-09T13:00:00.000Z),
+  "iat": "1717948800 (2024-06-09T12:00:00.000Z)",
+  "exp": "1717952400 (2024-06-09T13:00:00.000Z)",
   "aud": "my-qlik-sense-app",
   "iss": "qs-jwt"
 }
