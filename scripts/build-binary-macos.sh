@@ -30,7 +30,7 @@ echo "Step 2: Generate SEA blob..."
 node --experimental-sea-config sea-config.json
 
 echo "Step 3: Copy Node.js executable..."
-cp "$(node -e "process.stdout.write(process.execPath)")" "${DIST_FILE_NAME}"
+cp "$(node -e 'process.stdout.write(process.execPath)')" "${DIST_FILE_NAME}"
 
 echo "Step 4: Remove existing code signature from Node.js binary..."
 codesign --remove-signature "./${DIST_FILE_NAME}"
