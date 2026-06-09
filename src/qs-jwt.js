@@ -1,18 +1,53 @@
 import { Command, Option } from 'commander';
+import { fileURLToPath } from 'node:url';
 import { logger, appVersion } from './globals.js';
 
 import { jwtCreateQseow } from './lib/create-qseow.js';
 import { jwtCreateQscloud } from './lib/create-qscloud.js';
 import { createQseowAssertOptions, createCloudAssertOptions } from './lib/create-assert-options.js';
 
-const program = new Command();
+/**
+ * Action handler for the create-qseow command.
+ *
+ * @param {object} options - Parsed CLI options.
+ * @param {object} command - Commander command object.
+ */
+const handleCreateQseow = async (options, command) => {
+    try {
+        createQseowAssertOptions(options);
+
+        const res = await jwtCreateQseow(options, command);
+        logger.debug(`Call to jwtQseowCreate succeeded: ${res}`);
+    } catch (err) {
+        logger.error(`MAIN jwt create: ${err}`);
+    }
+};
 
 /**
- * Top level async function.
- * Workaround to deal with the fact that Node.js doesn't currently support top level async functions.
+ * Action handler for the create-qscloud command.
+ *
+ * @param {object} options - Parsed CLI options.
+ * @param {object} command - Commander command object.
  */
-(async () => {
-    // Basic app info
+const handleCreateQscloud = async (options, command) => {
+    try {
+        createCloudAssertOptions(options);
+
+        const res = await jwtCreateQscloud(options, command);
+        logger.debug(`Call to jwtCreateQscloud succeeded: ${res}`);
+    } catch (err) {
+        logger.error(`MAIN jwt create: ${err}`);
+    }
+};
+
+/**
+ * Creates and configures the Commander program.
+ *
+ * @returns {Command} Configured Commander program.
+ */
+const createProgram = () => {
+    const program = new Command();
+
     program
         .version(appVersion)
         .name('qs-jwt')
@@ -28,16 +63,7 @@ const program = new Command();
         .description(
             'Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows).'
         )
-        .action(async (options, command) => {
-            try {
-                createQseowAssertOptions(options);
-
-                const res = await jwtCreateQseow(options, command);
-                logger.debug(`Call to jwtQseowCreate succeeded: ${res}`);
-            } catch (err) {
-                logger.error(`MAIN jwt create: ${err}`);
-            }
-        })
+        .action(handleCreateQseow)
         .addOption(
             new Option('--loglevel <level>', 'Logging level')
                 .choices(['error', 'warn', 'info', 'verbose', 'debug'])
@@ -96,16 +122,7 @@ const program = new Command();
         .command('create-qscloud')
         .allowExcessArguments(false)
         .description('Create a JWT for use with Qlik Sense Cloud.')
-        .action(async (options, command) => {
-            try {
-                createCloudAssertOptions(options);
-
-                const res = await jwtCreateQscloud(options, command);
-                logger.debug(`Call to jwtCreateQscloud succeeded: ${res}`);
-            } catch (err) {
-                logger.error(`MAIN jwt create: ${err}`);
-            }
-        })
+        .action(handleCreateQscloud)
         .addOption(
             new Option('--loglevel <level>', 'Logging level')
                 .choices(['error', 'warn', 'info', 'verbose', 'debug'])
@@ -146,7 +163,6 @@ const program = new Command();
                 .choices(['true', 'false'])
                 .default('false')
         )
-        // .option('--cert-create', 'Should a new certificate be created?', false)
         .option('--cert-file-prefix <prefix>', 'Prefix to place before certificate file names.', '')
         .addOption(
             new Option(
@@ -159,6 +175,24 @@ const program = new Command();
             'Output only the JWT token, without any additional info. Useful with log level warn or error'
         );
 
-    // Parse command line params
-    await program.parseAsync(process.argv);
-})();
+    return program;
+};
+
+/**
+ * Runs the CLI application.
+ *
+ * @param {string[]} [argv=process.argv] - Command line arguments.
+ * @returns {Promise<void>}
+ */
+const run = async (argv = process.argv) => {
+    const program = createProgram();
+    await program.parseAsync(argv);
+};
+
+// Only run when executed directly (not when imported)
+const isEntryPoint = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isEntryPoint) {
+    run();
+}
+
+export { createProgram, run, handleCreateQseow, handleCreateQscloud };
