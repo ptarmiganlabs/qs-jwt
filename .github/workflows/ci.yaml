@@ -161,7 +161,7 @@ jobs:
                   artifacts: ./qs-jwt-${{ needs.release-please.outputs.release_tag_name }}-macos.zip
                   token: ${{ github.token }}
 
-            - name: Tidy up before existing
+            - name: Tidy up before exiting
               run: |
                   pwd
                   ls -la 
@@ -280,7 +280,7 @@ jobs:
                   artifacts: ./qs-jwt-${{ needs.release-please.outputs.release_tag_name }}-win.zip
                   token: ${{ github.token }}
 
-            - name: Tidy up before existing
+            - name: Tidy up before exiting
               run: |
                   dir
                   del build.cjs
@@ -373,7 +373,7 @@ jobs:
                   artifacts: ./qs-jwt-${{ needs.release-please.outputs.release_tag_name }}-linux.zip
                   token: ${{ github.token }}
 
-            - name: Tidy up before existing
+            - name: Tidy up before exiting
               run: |
                   pwd
                   ls -la
