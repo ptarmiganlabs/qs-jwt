@@ -3,14 +3,18 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 const {
     mockJwtCreateQseow,
     mockJwtCreateQscloud,
+    mockJwtDecode,
     mockCreateQseowAssertOptions,
     mockCreateCloudAssertOptions,
+    mockCreateDecodeAssertOptions,
     mockLogger,
 } = vi.hoisted(() => {
     const mockJwtCreateQseow = vi.fn().mockResolvedValue(true);
     const mockJwtCreateQscloud = vi.fn().mockResolvedValue(true);
+    const mockJwtDecode = vi.fn().mockResolvedValue(true);
     const mockCreateQseowAssertOptions = vi.fn();
     const mockCreateCloudAssertOptions = vi.fn();
+    const mockCreateDecodeAssertOptions = vi.fn();
     const mockLogger = {
         error: vi.fn(),
         verbose: vi.fn(),
@@ -21,8 +25,10 @@ const {
     return {
         mockJwtCreateQseow,
         mockJwtCreateQscloud,
+        mockJwtDecode,
         mockCreateQseowAssertOptions,
         mockCreateCloudAssertOptions,
+        mockCreateDecodeAssertOptions,
         mockLogger,
     };
 });
@@ -44,6 +50,14 @@ vi.mock('../lib/create-qscloud.js', () => ({
 vi.mock('../lib/create-assert-options.js', () => ({
     createQseowAssertOptions: mockCreateQseowAssertOptions,
     createCloudAssertOptions: mockCreateCloudAssertOptions,
+}));
+
+vi.mock('../lib/decode-jwt.js', () => ({
+    jwtDecode: mockJwtDecode,
+}));
+
+vi.mock('../lib/decode-assert-options.js', () => ({
+    createDecodeAssertOptions: mockCreateDecodeAssertOptions,
 }));
 
 const originalExit = process.exit;
@@ -71,7 +85,8 @@ afterEach(() => {
     process.stderr.write = originalStderrWrite;
 });
 
-const { createProgram, run, handleCreateQseow, handleCreateQscloud } = await import('../qs-jwt.js');
+const { createProgram, run, handleCreateQseow, handleCreateQscloud, handleDecode } =
+    await import('../qs-jwt.js');
 
 describe('qs-jwt', () => {
     describe('createProgram', () => {
@@ -97,9 +112,15 @@ describe('qs-jwt', () => {
             expect(qscloudCmd).toBeDefined();
         });
 
-        it('should have exactly 2 commands', () => {
+        it('should have decode command registered', () => {
             const program = createProgram();
-            expect(program.commands.length).toBe(2);
+            const decodeCmd = program.commands.find((cmd) => cmd.name() === 'decode');
+            expect(decodeCmd).toBeDefined();
+        });
+
+        it('should have exactly 3 commands', () => {
+            const program = createProgram();
+            expect(program.commands.length).toBe(3);
         });
     });
 
@@ -265,6 +286,56 @@ describe('qs-jwt', () => {
             await handleCreateQscloud(options, {});
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining('Cloud JWT creation failed')
+            );
+        });
+    });
+
+    describe('handleDecode', () => {
+        it('should call createDecodeAssertOptions with options', async () => {
+            const options = {
+                jwt: 'header.payload.signature',
+            };
+            await handleDecode(options, {});
+            expect(mockCreateDecodeAssertOptions).toHaveBeenCalledWith(options);
+        });
+
+        it('should call jwtDecode with options and command', async () => {
+            const options = {
+                jwt: 'header.payload.signature',
+            };
+            const command = { name: () => 'decode' };
+            await handleDecode(options, command);
+            expect(mockJwtDecode).toHaveBeenCalledWith(options, command);
+        });
+
+        it('should log debug message on success', async () => {
+            mockJwtDecode.mockResolvedValueOnce(true);
+            const options = {
+                jwt: 'header.payload.signature',
+            };
+            await handleDecode(options, {});
+            expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('succeeded'));
+        });
+
+        it('should log error when createDecodeAssertOptions throws', async () => {
+            mockCreateDecodeAssertOptions.mockImplementationOnce(() => {
+                throw new Error('Decode validation failed');
+            });
+            const options = { jwt: 'header.payload.signature' };
+            await handleDecode(options, {});
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Decode validation failed')
+            );
+        });
+
+        it('should log error when jwtDecode throws', async () => {
+            mockJwtDecode.mockRejectedValueOnce(new Error('JWT decode failed'));
+            const options = {
+                jwt: 'header.payload.signature',
+            };
+            await handleDecode(options, {});
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('JWT decode failed')
             );
         });
     });

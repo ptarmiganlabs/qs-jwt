@@ -3,7 +3,9 @@ import { logger, appVersion } from './globals.js';
 
 import { jwtCreateQseow } from './lib/create-qseow.js';
 import { jwtCreateQscloud } from './lib/create-qscloud.js';
+import { jwtDecode } from './lib/decode-jwt.js';
 import { createQseowAssertOptions, createCloudAssertOptions } from './lib/create-assert-options.js';
+import { createDecodeAssertOptions } from './lib/decode-assert-options.js';
 
 /**
  * Action handler for the create-qseow command.
@@ -36,6 +38,23 @@ const handleCreateQscloud = async (options, command) => {
         logger.debug(`Call to jwtCreateQscloud succeeded: ${res}`);
     } catch (err) {
         logger.error(`MAIN jwt create: ${err}`);
+    }
+};
+
+/**
+ * Action handler for the decode command.
+ *
+ * @param {object} options - Parsed CLI options.
+ * @param {object} command - Commander command object.
+ */
+const handleDecode = async (options, command) => {
+    try {
+        createDecodeAssertOptions(options);
+
+        const res = await jwtDecode(options, command);
+        logger.debug(`Call to jwtDecode succeeded: ${res}`);
+    } catch (err) {
+        logger.error(`MAIN jwt decode: ${err}`);
     }
 };
 
@@ -174,6 +193,34 @@ const createProgram = () => {
             'Output only the JWT token, without any additional info. Useful with log level warn or error'
         );
 
+    // -----------------------------
+    // decode
+    program
+        .command('decode')
+        .allowExcessArguments(false)
+        .description('Decode a JWT and display its header and payload. Optionally verify the signature.')
+        .action(handleDecode)
+        .addOption(
+            new Option('--loglevel <level>', 'Logging level')
+                .choices(['error', 'warn', 'info', 'verbose', 'debug'])
+                .default('info')
+        )
+        .option('--jwt <token>', 'JWT string to decode')
+        .option('--jwt-file <file>', 'File containing the JWT to decode')
+        .option(
+            '--cert-publickey-file <file>',
+            'File containing public key for signature verification'
+        )
+        .option('--cert-publickey <key>', 'Public key string for signature verification')
+        .option(
+            '--expected-audience <audience>',
+            'Expected audience value to verify (requires public key)'
+        )
+        .option(
+            '--minimal-output',
+            'Output as JSON only, without additional formatting'
+        );
+
     return program;
 };
 
@@ -190,4 +237,4 @@ const run = async (argv = process.argv) => {
 
 run();
 
-export { createProgram, run, handleCreateQseow, handleCreateQscloud };
+export { createProgram, run, handleCreateQseow, handleCreateQscloud, handleDecode };
