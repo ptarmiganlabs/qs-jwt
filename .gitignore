@@ -116,3 +116,6 @@ qs-jwt.cjs
 qs-jwt.exe
 build.cjs
 sea-prep.blob
+
+# Project specific files
+qs-jwt--local--*
