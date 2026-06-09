@@ -29,7 +29,7 @@ echo "Step 2: Generate SEA blob..."
 node --experimental-sea-config sea-config.json
 
 echo "Step 3: Copy Node.js executable..."
-cp "$(node -e "process.stdout.write(process.execPath)")" "${DIST_FILE_NAME}"
+cp "$(node -e 'process.stdout.write(process.execPath)')" "${DIST_FILE_NAME}"
 
 echo "Step 4: Inject blob into binary..."
 npx postject "${DIST_FILE_NAME}" NODE_SEA_BLOB sea-prep.blob \
