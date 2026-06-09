@@ -25,7 +25,6 @@ src/bin
 src/img
 docker-compose.yml
 Dockerfile
-package-lock.json
 node_modules
 renovate.json
 release

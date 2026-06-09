@@ -4,8 +4,8 @@ FROM node:24-bookworm-slim AS build
 WORKDIR /nodeapp
 
 # Install app dependencies
-COPY package.json ./
-RUN npm install --omit=dev
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
 # Stage 2: Runtime
 FROM node:24-bookworm-slim
