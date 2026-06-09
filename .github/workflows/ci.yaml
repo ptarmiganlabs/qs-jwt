@@ -13,6 +13,9 @@ jobs:
             releases_created: ${{ steps.release.outputs.releases_created }}
             release_tag_name: ${{ steps.release.outputs.tag_name }}
             release_upload_url: ${{ steps.release.outputs.upload_url }}
+        permissions:
+            contents: write
+            pull-requests: write
         env:
             GITHUB_REF: ${{ github.ref }}
             GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -65,6 +68,8 @@ jobs:
         # timeout-minutes: 15
 
         if: needs.release-please.outputs.releases_created == 'true'
+        permissions:
+            contents: write
         env:
             DIST_FILE_NAME: qs-jwt
             GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -175,6 +180,8 @@ jobs:
             - win-code-sign
         # timeout-minutes: 15
         if: needs.release-please.outputs.releases_created == 'true'
+        permissions:
+            contents: write
         env:
             DIST_FILE_NAME: qs-jwt
             GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -287,6 +294,9 @@ jobs:
         # timeout-minutes: 15
 
         if: needs.release-please.outputs.releases_created == 'true'
+        permissions:
+            contents: write
+            security-events: write
         env:
             DIST_FILE_NAME: qs-jwt
             GITHUB_TOKEN: ${{ secrets.PAT }}
