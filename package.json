@@ -5,6 +5,8 @@
     "main": "index.js",
     "scripts": {
         "build:docker": "docker build -t qs-jwt:latest .",
+        "build:bundle": "esbuild qs-jwt.js --bundle --outfile=build.cjs --format=cjs --platform=node --target=node24 --inject:./src/lib/import-meta-url.js --define:import.meta.url=import_meta_url",
+        "build:sea:prep": "node --experimental-sea-config sea-config.json",
         "build:binary:linux": "bash scripts/build-binary-linux.sh",
         "build:binary:macos": "bash scripts/build-binary-macos.sh",
         "build:binary:win": "powershell -ExecutionPolicy Bypass -File scripts/build-binary-win.ps1",
