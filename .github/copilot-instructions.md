@@ -116,6 +116,17 @@ Warn the user before editing if impact analysis reports HIGH or CRITICAL risk. D
 - Docker/SEA builds install **production dependencies only** (`npm ci --omit=dev`). If code needs a runtime dependency, it must be in `dependencies`, not `devDependencies`.
 - Avoid changes that assume developer-only tooling exists at runtime.
 
+## Documentation
+
+Every new or materially updated feature, behavior, or configuration change **must** be accompanied by a corresponding Markdown file in `docs/to-doc-site/`. These files are the source material for the qs-jwt documentation site (`qs-jwt.ptarmiganlabs.com`) and must contain enough information for someone to write or update the doc site content.
+
+- **One topic per file**, kebab-case naming (e.g., `jwt-creation-new-option.md`).
+- **Write for the doc site audience**: Qlik Sense administrators, not Node.js developers. Explain what changed, why it matters, and how to use it.
+- **Be self-contained** — each file should stand on its own without requiring cross-references.
+- **Include**: what changed, motivation/reasoning, user-facing impact, examples or CLI syntax if relevant, any migration steps or breaking changes.
+- **Do not include**: internal code paths, variable names, or implementation details unless directly relevant to an administrator.
+- Follow the full conventions documented in `docs/to-doc-site/README.md`.
+
 ## Repo Hygiene
 
 - Do not edit generated artifacts or dependencies (e.g. `node_modules/`, `build/`, `coverage/`) unless the task explicitly requires it.

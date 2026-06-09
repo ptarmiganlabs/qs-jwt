@@ -90,3 +90,14 @@ This project is indexed by GitNexus as **qs-jwt** (203 symbols, 192 relationship
 - Private keys may be passed via `--cert-privatekey` option or `QSJWTPRIVKEY` env var — never log or expose these
 - JWTs provide authentication access to Qlik Sense — treat created tokens as credentials
 - Be careful when modifying `lib/certificates.js` — it handles RSA key generation and certificate creation
+
+## Documentation
+
+Every new or materially updated feature, behavior, or configuration change **must** be accompanied by a corresponding Markdown file in `docs/to-doc-site/`. These files are the source material for the qs-jwt documentation site (`qs-jwt.ptarmiganlabs.com`) and must contain enough information for someone to write or update the doc site content.
+
+- **One topic per file**, kebab-case naming (e.g., `jwt-creation-new-option.md`).
+- **Write for the doc site audience**: Qlik Sense administrators, not Node.js developers. Explain what changed, why it matters, and how to use it.
+- **Be self-contained** — each file should stand on its own without requiring cross-references.
+- **Include**: what changed, motivation/reasoning, user-facing impact, examples or CLI syntax if relevant, any migration steps or breaking changes.
+- **Do not include**: internal code paths, variable names, or implementation details unless directly relevant to an administrator.
+- Follow the full conventions documented in `docs/to-doc-site/README.md`.
