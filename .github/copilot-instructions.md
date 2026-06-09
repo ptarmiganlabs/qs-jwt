@@ -106,7 +106,7 @@ Warn the user before editing if impact analysis reports HIGH or CRITICAL risk. D
 ## Logging & Error Handling
 
 - Use the existing logger (`globals.logger`, winston-based) and keep log messages free of secrets (tokens, credentials, certificate contents).
-- Logging levels: `error`, `warning`, `info`, `verbose`, `debug` (default: `info`).
+- Logging levels: `error`, `warn`, `info`, `verbose`, `debug` (default: `info`).
 
 ## Packaging (Docker + SEA)
 
