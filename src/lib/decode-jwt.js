@@ -10,8 +10,9 @@ import { logger, setLoggingLevel } from '../globals.js';
  * @returns {string} ISO date string or 'N/A' if invalid.
  */
 const formatTimestamp = (timestamp) => {
-    if (!timestamp || typeof timestamp !== 'number') return 'N/A';
-    return new Date(timestamp * 1000).toISOString();
+    if (!Number.isFinite(timestamp)) return 'N/A';
+    const date = new Date(timestamp * 1000);
+    return Number.isNaN(date.valueOf()) ? 'N/A' : date.toISOString();
 };
 
 /**
