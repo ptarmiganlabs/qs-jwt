@@ -128,7 +128,7 @@ Signature Verification:
   Validity:
     Issued: 2024-06-09T12:00:00.000Z
     Expires: 2024-06-09T13:00:00.000Z
-    Current: ✅ Valid (not expired)
+    Current: ✅ Token is currently valid
   Audience: my-qlik-sense-app ✅
   Issuer: qs-jwt
 ```
