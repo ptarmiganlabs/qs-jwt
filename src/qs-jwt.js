@@ -1,5 +1,4 @@
 import { Command, Option } from 'commander';
-import { fileURLToPath } from 'node:url';
 import { logger, appVersion } from './globals.js';
 
 import { jwtCreateQseow } from './lib/create-qseow.js';
@@ -189,10 +188,6 @@ const run = async (argv = process.argv) => {
     await program.parseAsync(argv);
 };
 
-// Only run when executed directly (not when imported)
-const isEntryPoint = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
-if (isEntryPoint) {
-    run();
-}
+run();
 
 export { createProgram, run, handleCreateQseow, handleCreateQscloud };

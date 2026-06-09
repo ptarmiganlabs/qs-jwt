@@ -48,16 +48,27 @@ vi.mock('../lib/create-assert-options.js', () => ({
 
 const originalExit = process.exit;
 const originalArgv = process.argv;
+const originalStdoutWrite = process.stdout.write;
+const originalStderrWrite = process.stderr.write;
+
+process.exit = vi.fn();
+process.argv = ['node', 'qs-jwt'];
+process.stdout.write = vi.fn();
+process.stderr.write = vi.fn();
 
 beforeEach(() => {
     vi.clearAllMocks();
     process.exit = vi.fn();
     process.argv = ['node', 'qs-jwt'];
+    process.stdout.write = vi.fn();
+    process.stderr.write = vi.fn();
 });
 
 afterEach(() => {
     process.exit = originalExit;
     process.argv = originalArgv;
+    process.stdout.write = originalStdoutWrite;
+    process.stderr.write = originalStderrWrite;
 });
 
 const { createProgram, run, handleCreateQseow, handleCreateQscloud } = await import('../qs-jwt.js');
