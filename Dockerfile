@@ -26,4 +26,4 @@ COPY --chown=node:node . .
 # Use the built-in non-root user
 USER node
 
-ENTRYPOINT ["node", "qs-jwt.js"]
+ENTRYPOINT ["node", "src/qs-jwt.js"]

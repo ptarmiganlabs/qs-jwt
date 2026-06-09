@@ -42,6 +42,7 @@ const verifyCertificatesExist = (options) =>
 
                 logger.error(`Certificate key file ${certKeyFile} missing`);
                 resolve(false);
+            } catch (err) {
                 logger.error(`CERT CHECK: ${JSON.stringify(err, null, 2)}`);
                 resolve(false);
             }

@@ -26,10 +26,10 @@ If any check fails, fix the issues and run checks again.
 ## Project Basics (read this before changing code)
 
 - This repo is **Node.js + ESM** (`"type": "module"` in `package.json`). Use `import`/`export` — do **not** use `require`/`module.exports`.
-- Primary entrypoint is `qs-jwt.js` (root-level). It is a **CLI tool** built with [Commander.js](https://github.com/tj/commander).
+- Primary entrypoint is `src/qs-jwt.js`. It is a **CLI tool** built with [Commander.js](https://github.com/tj/commander).
 - All configuration is passed via CLI options — there is no config file.
 - The global singleton in `globals.js` provides the winston logger and app version. Prefer using existing patterns instead of creating new global singletons.
-- Core logic lives in `lib/` (JWT creation for QSEoW and QS Cloud, certificate handling, option validation).
+- Core logic lives in `src/lib/` (JWT creation for QSEoW and QS Cloud, certificate handling, option validation).
 
 ## GitNexus Code Intelligence
 
@@ -76,7 +76,7 @@ Warn the user before editing if impact analysis reports HIGH or CRITICAL risk. D
 ## How to Run (local dev)
 
 - Install deps: `npm ci`
-- Run the app: `node qs-jwt.js <command> [options]` (e.g. `node qs-jwt.js create-qseow --help`)
+- Run the app: `node src/qs-jwt.js <command> [options]` (e.g. `node src/qs-jwt.js create-qseow --help`)
 - Common scripts:
     - `npm run lint:fix`
     - `npm run format`
@@ -91,7 +91,7 @@ Warn the user before editing if impact analysis reports HIGH or CRITICAL risk. D
 
 - The repo enforces **Prettier** and **ESLint** (flat config with `@eslint/js` recommended + `eslint-plugin-jsdoc` + `eslint-plugin-prettier`) via ESLint v10.
 - ESLint config is in `eslint.config.js` (flat config format).
-- Lint covers both root-level and `lib/` files: `npx eslint ./*.js ./lib/*.js`.
+- Lint covers all source files: `npx eslint src/**/*.js`.
 - JSDoc is enforced on all functions, methods, and classes.
 - Do **not** do drive-by formatting/indentation changes "by hand". Keep diffs focused on the requested change.
 - Prettier config: 100 printWidth, 4 tabWidth, single quotes, trailing commas (es5).

@@ -59,28 +59,28 @@ This project is indexed by GitNexus as **qs-jwt** (203 symbols, 192 relationship
 
 ## Architecture
 
-- **Runtime entrypoint**: `qs-jwt.js` — CLI tool using Commander.js
-- **Global singleton**: `globals.js` (winston logger + app version) — used by all modules
-- **Core logic**: `lib/` directory:
+- **Runtime entrypoint**: `src/qs-jwt.js` — CLI tool using Commander.js
+- **Global singleton**: `src/globals.js` (winston logger + app version) — used by all modules
+- **Core logic**: `src/lib/` directory:
     - `create-qseow.js` — JWT creation for client-managed Qlik Sense (QSEoW)
     - `create-qscloud.js` — JWT creation for Qlik Sense Cloud
     - `certificates.js` — RSA key pair and certificate generation (node-forge)
     - `create-assert-options.js` — CLI option validation
-- **SEA support**: `src/lib/import-meta-url.js` (esbuild injection helper), `sea-config.json`
+- **SEA support**: `src/lib/import-meta-url.js` (esbuild injection helper), `src/sea-config.json`
 - **Docker**: Multi-stage `Dockerfile` based on `node:24-bookworm-slim`, production deps only, runs as built-in `node` user
 
 ## Conventions
 
 - **ESM only** (`"type": "module"`) — use `import`/`export`, do not use `require`/`module.exports`
-- **ESLint (flat config) + Prettier** — ESLint v10 with `eslint.config.js` (flat config), `@eslint/js` recommended + `eslint-plugin-jsdoc` + `eslint-plugin-prettier`. Lint covers `./*.js` and `./lib/*.js`. Run `npm run lint:fix` before committing
+- **ESLint (flat config) + Prettier** — ESLint v10 with `eslint.config.js` (flat config), `@eslint/js` recommended + `eslint-plugin-jsdoc` + `eslint-plugin-prettier`. Lint covers `src/**/*.js`. Run `npm run lint:fix` before committing
 - **Logging** — use `globals.logger` (winston-based), never `console.log`; never log private keys, tokens, or certificate contents
 - **CLI-driven** — all configuration via Commander.js options; no config files
 - **Dependencies** — Docker/SEA builds use `--omit=dev`; runtime deps must be in `dependencies`, not `devDependencies`
 
 ## SEA (Single Executable App)
 
-- `qs-jwt.js` is bundled via esbuild into `build.cjs` (CJS format, required by Node.js SEA)
-- `sea-config.json` defines the SEA entry point and output blob
+- `src/qs-jwt.js` is bundled via esbuild into `build.cjs` (CJS format, required by Node.js SEA)
+- `src/sea-config.json` defines the SEA entry point and output blob
 - Platform-specific build scripts in `scripts/` handle binary injection via `postject`
 - `src/lib/import-meta-url.js` is an esbuild injection helper that polyfills `import.meta.url` in the CJS bundle
 
@@ -89,7 +89,7 @@ This project is indexed by GitNexus as **qs-jwt** (203 symbols, 192 relationship
 - No real secrets/keys/certs in repo — examples in README only
 - Private keys may be passed via `--cert-privatekey` option or `QSJWTPRIVKEY` env var — never log or expose these
 - JWTs provide authentication access to Qlik Sense — treat created tokens as credentials
-- Be careful when modifying `lib/certificates.js` — it handles RSA key generation and certificate creation
+- Be careful when modifying `src/lib/certificates.js` — it handles RSA key generation and certificate creation
 
 ## Documentation
 

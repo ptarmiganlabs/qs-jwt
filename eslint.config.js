@@ -26,6 +26,7 @@ export default [
 
         rules: {
             'prettier/prettier': 'error',
+            'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
             'jsdoc/tag-lines': ['error', 'any', { startLines: 1 }],
             'jsdoc/require-jsdoc': [
                 'error',

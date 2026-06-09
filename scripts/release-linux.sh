@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-./node_modules/.bin/esbuild qs-jwt.js --bundle --outfile=build.cjs --format=cjs --platform=node --target=node24 --inject:./src/lib/import-meta-url.js --define:import.meta.url=import_meta_url
-node --experimental-sea-config sea-config.json
+./node_modules/.bin/esbuild src/qs-jwt.js --bundle --outfile=build.cjs --format=cjs --platform=node --target=node24 --inject:./src/lib/import-meta-url.js --define:import.meta.url=import_meta_url
+node --experimental-sea-config src/sea-config.json
 
 # Get a copy of the Node executable
 cp "$(node -p 'process.execPath')" "${DIST_FILE_NAME}"

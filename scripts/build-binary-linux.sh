@@ -16,7 +16,7 @@ echo "=== Building qs-jwt binary for Linux ==="
 echo "Output file: ./${DIST_FILE_NAME}"
 
 echo "Step 1: Bundle source with esbuild..."
-node_modules/.bin/esbuild qs-jwt.js \
+node_modules/.bin/esbuild src/qs-jwt.js \
     --bundle \
     --outfile=build.cjs \
     --format=cjs \
@@ -26,7 +26,7 @@ node_modules/.bin/esbuild qs-jwt.js \
     --define:import.meta.url=import_meta_url
 
 echo "Step 2: Generate SEA blob..."
-node --experimental-sea-config sea-config.json
+node --experimental-sea-config src/sea-config.json
 
 echo "Step 3: Copy Node.js executable..."
 cp "$(node -e 'process.stdout.write(process.execPath)')" "${DIST_FILE_NAME}"

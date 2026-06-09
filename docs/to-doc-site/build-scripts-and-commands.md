@@ -19,8 +19,8 @@
 
 | Command | Description |
 |---------|-------------|
-| `npm run lint` | Run ESLint (root + lib files) |
-| `npm run lint:fix` | Run ESLint with auto-fix (root + lib files) |
+| `npm run lint` | Run ESLint (`src/**/*.js`) |
+| `npm run lint:fix` | Run ESLint with auto-fix (`src/**/*.js`) |
 | `npm run format` | Run Prettier |
 | `npm run knip` | Detect unused files, dependencies, and exports |
 

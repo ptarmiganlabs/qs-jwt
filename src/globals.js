@@ -1,10 +1,22 @@
 import winston from 'winston';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import sea from './lib/sea-wrapper.js';
 
-const appVersion = JSON.parse(
-    readFileSync(fileURLToPath(new URL('./package.json', import.meta.url)))
-).version;
+// Initialize SEA wrapper synchronously (required for CJS bundle in SEA)
+sea.initializeSync();
+
+let appVersion;
+if (sea.isSea()) {
+    // Running as SEA binary - read package.json from bundled assets
+    const packageJson = sea.getAsset('package.json', 'utf8');
+    appVersion = JSON.parse(packageJson).version;
+} else {
+    // Running as regular Node.js - read package.json from filesystem
+    appVersion = JSON.parse(
+        readFileSync(fileURLToPath(new URL('../package.json', import.meta.url)))
+    ).version;
+}
 
 // Set up logger with timestamps and colors, and optional logging to disk file
 const logTransports = [];

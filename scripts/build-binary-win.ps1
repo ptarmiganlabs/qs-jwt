@@ -16,7 +16,7 @@ Write-Output "=== Building qs-jwt binary for Windows ==="
 Write-Output "Output file: .\${DIST_FILE_NAME}.exe"
 
 Write-Output "Step 1: Bundle source with esbuild..."
-./node_modules/.bin/esbuild "qs-jwt.js" `
+./node_modules/.bin/esbuild "src/qs-jwt.js" `
     --bundle `
     --outfile=build.cjs `
     --format=cjs `
@@ -26,7 +26,7 @@ Write-Output "Step 1: Bundle source with esbuild..."
     "--define:import.meta.url=import_meta_url"
 
 Write-Output "Step 2: Generate SEA blob..."
-node --experimental-sea-config sea-config.json
+node --experimental-sea-config src/sea-config.json
 
 Write-Output "Step 3: Copy Node.js executable..."
 # In CI, we remove the existing Authenticode signature from the copied node.exe
