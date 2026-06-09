@@ -12,7 +12,10 @@
         "build:binary:linux": "bash scripts/build-binary-linux.sh",
         "build:binary:macos": "bash scripts/build-binary-macos.sh",
         "build:binary:win": "powershell -ExecutionPolicy Bypass -File scripts/build-binary-win.ps1",
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "vitest",
+        "test:run": "vitest run",
+        "test:coverage": "vitest run --coverage",
+        "test:watch": "vitest watch",
         "format": "npm run format:prettier",
         "format:prettier": "npx prettier --config .prettierrc.yaml \"./**/*.{ts,css,less,js}\" --write",
         "lint": "npx eslint src/**/*.js",
@@ -55,6 +58,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
+        "@vitest/coverage-v8": "^4.1.8",
         "audit-ci": "^7.1.0",
         "esbuild": "^0.28.0",
         "eslint": "^10.4.1",
@@ -68,6 +72,7 @@
         "lockfile-lint": "^5.0.0",
         "postject": "^1.0.0-alpha.6",
         "prettier": "^3.8.4",
-        "snyk": "^1.1305.1"
+        "snyk": "^1.1305.1",
+        "vitest": "^4.1.8"
     }
 }
