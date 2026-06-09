@@ -24,29 +24,24 @@ async function exists(pathToCheck) {
  * @param {object} options - CLI options containing certPrivatekeyFile path.
  * @returns {Promise<boolean>} True if all required certificate files exist.
  */
-const verifyCertificatesExist = (options) =>
-    new Promise((resolve) => {
-        (async () => {
-            try {
-                logger.verbose('Checking if signing certificates exists');
+async function verifyCertificatesExist(options) {
+    try {
+        logger.verbose('Checking if signing certificates exist');
 
-                const certKeyFile = path.resolve(options.certPrivatekeyFile);
+        const certKeyFile = path.resolve(options.certPrivatekeyFile);
+        const certKeyExists = await exists(certKeyFile);
 
-                const certKeyExists = await exists(certKeyFile);
+        if (certKeyExists === true) {
+            logger.verbose(`Certificate key file ${certKeyFile} exists`);
+            return true;
+        }
 
-                if (certKeyExists === true) {
-                    logger.verbose(`Certificate key file ${certKeyFile} exists`);
-                    resolve(true);
-                    return;
-                }
-
-                logger.error(`Certificate key file ${certKeyFile} missing`);
-                resolve(false);
-            } catch (err) {
-                logger.error(`CERT CHECK: ${JSON.stringify(err, null, 2)}`);
-                resolve(false);
-            }
-        })();
-    });
+        logger.error(`Certificate key file ${certKeyFile} missing`);
+        return false;
+    } catch (err) {
+        logger.error(`CERT CHECK: ${JSON.stringify(err, null, 2)}`);
+        return false;
+    }
+}
 
 export { verifyCertificatesExist };
