@@ -257,10 +257,10 @@ const jwtDecode = async (options) => {
             const output = formatVerificationJson(header, payload, verification);
             console.log(JSON.stringify(output, null, 2));
         } else {
-            logger.info('JWT Header:');
+            console.log('JWT Header:');
             console.log(JSON.stringify(header, null, 2));
 
-            logger.info('\nJWT Payload:');
+            console.log('JWT Payload:');
             console.log(JSON.stringify(formatPayloadForDisplay(payload), null, 2));
 
             if (verification) {
