@@ -113,3 +113,6 @@ dist
 .tern-port
 qs-jwt
 qs-jwt.cjs
+qs-jwt.exe
+build.cjs
+sea-prep.blob

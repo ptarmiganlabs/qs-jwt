@@ -8,7 +8,9 @@
         "format": "npm run format:prettier",
         "format:prettier": "npx prettier --config .prettierrc.yaml \"./**/*.{ts,css,less,js}\" --write",
         "lint": "npx eslint ./*.js",
-        "pc": "pre-commit run --all-files"
+        "pc": "pre-commit run --all-files",
+        "build:bundle": "npx esbuild ./qs-jwt.js --bundle --outfile=build.cjs --format=cjs --platform=node --target=node24 --minify",
+        "build:sea:prep": "node --experimental-sea-config sea-config.json"
     },
     "repository": {
         "type": "git",
@@ -42,6 +44,7 @@
     },
     "devDependencies": {
         "esbuild": "^0.21.4",
+        "postject": "^1.0.0-alpha.6",
         "prettier": "^3.3.0",
         "snyk": "^1.1291.1"
     }
