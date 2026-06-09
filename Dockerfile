@@ -1,28 +1,29 @@
-# Build Docker image
+# Stage 1: Build
+FROM node:24-bookworm-slim AS build
+
+WORKDIR /nodeapp
+
+# Install app dependencies
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+# Stage 2: Runtime
 FROM node:24-bookworm-slim
 
 # Add metadata about the image
 LABEL maintainer="Göran Sander mountaindude@ptarmiganlabs.com"
 LABEL description="Command line tool for creating JWTs that can be used to authenticate with both Qlik Sense Cloud and client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows, QSEoW)."
 
-# Create app dir inside container
+# Set environment to production
+ENV NODE_ENV=production
+
 WORKDIR /nodeapp
 
-# Install app dependencies separately (creating a separate layer for node_modules, effectively caching them between image rebuilds)
-COPY package.json .
-RUN npm install
+# Copy only necessary files from build stage
+COPY --from=build --chown=node:node /nodeapp/node_modules ./node_modules
+COPY --chown=node:node . .
 
-# Copy app's source files
-COPY . .
-
-# Create and use non-root user 
-RUN groupadd -r nodejs \
-   && useradd -m -r -g nodejs nodejs
-
-RUN chown -R nodejs:nodejs /nodeapp
-RUN chmod 755 /nodeapp
-
-USER nodejs
+# Use the built-in non-root user
+USER node
 
 ENTRYPOINT ["node", "qs-jwt.js"]
-

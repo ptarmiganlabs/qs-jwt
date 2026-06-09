@@ -14,7 +14,7 @@ The release targets are:
 
 The release workflow creates stand-alone binaries in four stages:
 
-1. Bundle `qs-jwt.js` into `build.cjs` using esbuild.
+1. Bundle ESM source (`qs-jwt.js`) into `build.cjs` (CJS format, required by Node.js SEA) using esbuild.
 2. Generate a SEA blob with `node --experimental-sea-config sea-config.json`.
 3. Copy the platform Node.js executable and inject the SEA blob with `postject`.
 4. Re-apply platform signing, notarization, and archive packaging.
@@ -67,14 +67,14 @@ A Software Bill of Materials (SBOM) is generated for each release using the Micr
 - `package.json`
 - `package-lock.json`
 - `sea-config.json`
-- `src/lib/import-meta-url.js`
+- `src/lib/import-meta-url.js` (esbuild injection helper — polyfills `import.meta.url` in CJS bundle)
 - `scripts/build-binary-linux.sh`
 - `scripts/build-binary-macos.sh`
 - `scripts/build-binary-win.ps1`
 - `scripts/release-linux.sh`
 - `scripts/release-macos.sh`
 - `scripts/release-win.ps1`
-- `scripts/check-licenses.mjs`
+- `scripts/check-licenses.js`
 - `THIRD-PARTY-NOTICES.md`
 - `.audit-ci.json`
 

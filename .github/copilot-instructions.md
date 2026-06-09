@@ -25,7 +25,7 @@ If any check fails, fix the issues and run checks again.
 
 ## Project Basics (read this before changing code)
 
-- This repo is **Node.js + CommonJS**. Use `require`/`module.exports` — do **not** use `import`/`export`.
+- This repo is **Node.js + ESM** (`"type": "module"` in `package.json`). Use `import`/`export` — do **not** use `require`/`module.exports`.
 - Primary entrypoint is `qs-jwt.js` (root-level). It is a **CLI tool** built with [Commander.js](https://github.com/tj/commander).
 - All configuration is passed via CLI options — there is no config file.
 - The global singleton in `globals.js` provides the winston logger and app version. Prefer using existing patterns instead of creating new global singletons.
@@ -89,7 +89,10 @@ Warn the user before editing if impact analysis reports HIGH or CRITICAL risk. D
 
 ## Linting, Formatting, and Diffs
 
-- The repo enforces **Prettier** and **ESLint** (airbnb-base config) via ESLint.
+- The repo enforces **Prettier** and **ESLint** (flat config with `@eslint/js` recommended + `eslint-plugin-jsdoc` + `eslint-plugin-prettier`) via ESLint v10.
+- ESLint config is in `eslint.config.js` (flat config format).
+- Lint covers both root-level and `lib/` files: `npx eslint ./*.js ./lib/*.js`.
+- JSDoc is enforced on all functions, methods, and classes.
 - Do **not** do drive-by formatting/indentation changes "by hand". Keep diffs focused on the requested change.
 - Prettier config: 100 printWidth, 4 tabWidth, single quotes, trailing commas (es5).
 
@@ -107,8 +110,9 @@ Warn the user before editing if impact analysis reports HIGH or CRITICAL risk. D
 
 ## Packaging (Docker + SEA)
 
-- Docker builds use `node:24-bookworm-slim` and run as non-root user.
-- SEA (Single Executable Application) builds: esbuild bundles `qs-jwt.js` → `build.cjs`, then Node.js SEA creates platform-specific binaries.
+- Docker uses a **multi-stage build**: stage 1 installs production deps (`npm ci --omit=dev`), stage 2 copies them into a clean runtime image.
+- Docker runs as the built-in non-root `node` user.
+- SEA (Single Executable Application) builds: esbuild bundles ESM source → `build.cjs` (CJS format, required by Node.js SEA), then Node.js SEA creates platform-specific binaries.
 - Docker/SEA builds install **production dependencies only** (`npm ci --omit=dev`). If code needs a runtime dependency, it must be in `dependencies`, not `devDependencies`.
 - Avoid changes that assume developer-only tooling exists at runtime.
 

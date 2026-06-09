@@ -67,22 +67,22 @@ This project is indexed by GitNexus as **qs-jwt** (203 symbols, 192 relationship
     - `certificates.js` — RSA key pair and certificate generation (node-forge)
     - `create-assert-options.js` — CLI option validation
 - **SEA support**: `src/lib/import-meta-url.js` (esbuild injection helper), `sea-config.json`
-- **Docker**: `Dockerfile` based on `node:24-bookworm-slim`, runs as non-root user
+- **Docker**: Multi-stage `Dockerfile` based on `node:24-bookworm-slim`, production deps only, runs as built-in `node` user
 
 ## Conventions
 
-- **CommonJS only** — use `require`/`module.exports`, do not use `import`/`export`
-- **ESLint (airbnb-base) + Prettier** — run `npm run lint:fix` before committing
+- **ESM only** (`"type": "module"`) — use `import`/`export`, do not use `require`/`module.exports`
+- **ESLint (flat config) + Prettier** — ESLint v10 with `eslint.config.js` (flat config), `@eslint/js` recommended + `eslint-plugin-jsdoc` + `eslint-plugin-prettier`. Lint covers `./*.js` and `./lib/*.js`. Run `npm run lint:fix` before committing
 - **Logging** — use `globals.logger` (winston-based), never `console.log`; never log private keys, tokens, or certificate contents
 - **CLI-driven** — all configuration via Commander.js options; no config files
 - **Dependencies** — Docker/SEA builds use `--omit=dev`; runtime deps must be in `dependencies`, not `devDependencies`
 
 ## SEA (Single Executable App)
 
-- `qs-jwt.js` is bundled via esbuild into `build.cjs` (CJS format, Node 24 target)
+- `qs-jwt.js` is bundled via esbuild into `build.cjs` (CJS format, required by Node.js SEA)
 - `sea-config.json` defines the SEA entry point and output blob
 - Platform-specific build scripts in `scripts/` handle binary injection via `postject`
-- `src/lib/import-meta-url.js` is injected by esbuild to polyfill `import.meta.url`
+- `src/lib/import-meta-url.js` is an esbuild injection helper that polyfills `import.meta.url` in the CJS bundle
 
 ## Security
 

@@ -19,8 +19,8 @@
 
 | Command | Description |
 |---------|-------------|
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Run ESLint with auto-fix |
+| `npm run lint` | Run ESLint (root + lib files) |
+| `npm run lint:fix` | Run ESLint with auto-fix (root + lib files) |
 | `npm run format` | Run Prettier |
 | `npm run knip` | Detect unused files, dependencies, and exports |
 
@@ -44,7 +44,7 @@
 | `npm run license:json` | Generate JSON license report |
 | `npm run license:full` | Run summary + check + report |
 
-The license allowlist is maintained in `scripts/check-licenses.mjs`. To add a new approved license, update the `ALLOWED_LICENSES` array in that file.
+The license allowlist is maintained in `scripts/check-licenses.js`. To add a new approved license, update the `ALLOWED_LICENSES` array in that file.
 
 ## Scripts directory
 
@@ -56,7 +56,7 @@ The license allowlist is maintained in `scripts/check-licenses.mjs`. To add a ne
 | `scripts/release-linux.sh` | CI Linux release build (zip + THIRD-PARTY-NOTICES.md) |
 | `scripts/release-macos.sh` | CI macOS release build (signing + notarization + zip) |
 | `scripts/release-win.ps1` | CI Windows release build (zip + THIRD-PARTY-NOTICES.md) |
-| `scripts/check-licenses.mjs` | License compliance checker |
+| `scripts/check-licenses.js` | License compliance checker |
 
 ## Key differences: local vs CI builds
 
