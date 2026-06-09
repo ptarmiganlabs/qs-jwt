@@ -5,7 +5,7 @@ qs-jwt includes the following third-party packages that require notice beyond th
 ## node-forge
 
 - Package: `node-forge`
-- Version: 1.3.1
+- Version: 1.4.0
 - License: BSD-3-Clause
 - Package URL: https://www.npmjs.com/package/node-forge
 - Source URL: https://github.com/digitalbazaar/forge
