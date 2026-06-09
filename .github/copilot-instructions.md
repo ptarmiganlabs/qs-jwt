@@ -99,7 +99,7 @@ Warn the user before editing if impact analysis reports HIGH or CRITICAL risk. D
 ## Security and Crypto
 
 - Never add real secrets/keys/certificates/tokens to the repo. Keep examples in templates/README only.
-- qs-jwt handles cryptographic keys (RSA private keys for JWT signing). Be careful when modifying code in `lib/certificates.js`, `lib/create-qseow.js`, and `lib/create-qscloud.js`.
+- qs-jwt handles cryptographic keys (RSA private keys for JWT signing). Be careful when modifying code in `src/lib/certificates.js`, `src/lib/create-qseow.js`, and `src/lib/create-qscloud.js`.
 - Private keys may be passed via CLI options or environment variables (`QSJWTPRIVKEY`). Never log or expose key contents.
 - JWTs created by this tool provide authentication access to Qlik Sense systems — treat them like credentials.
 
