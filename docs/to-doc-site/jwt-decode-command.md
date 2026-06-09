@@ -216,24 +216,22 @@ The JWT is malformed. A valid JWT has three parts separated by dots: `header.pay
 
 The JWT structure is invalid or the base64 encoding is incorrect.
 
-### "Signature verification failed: jwt expired"
+### `"jwt expired"`
 
-The token has expired. Check the `exp` claim in the payload to see when it expired. You'll need to create a new JWT with a longer expiration time.
+The token is expired. In the decode output this appears under **Signature Verification** as `Reason: jwt expired`.
 
-### "Signature verification failed: jwt audience invalid"
+### `"jwt audience invalid"`
 
-The audience in the JWT doesn't match the expected audience. This could mean:
+The audience in the JWT doesn't match `--expected-audience`. In the decode output this appears as `Reason: jwt audience invalid. expected: ...`.
+
+This could mean:
 
 - The JWT was created for a different Qlik Sense virtual proxy
 - The `--expected-audience` value is incorrect
 
-### "Signature verification failed: invalid signature"
+### `"invalid signature"`
 
-The signature doesn't match the provided public key. This could mean:
-
-- The public key doesn't match the private key used to sign the JWT
-- The token has been tampered with
-
+The signature doesn't match the provided public key. In the decode output this appears as `Reason: invalid signature`.
 ## Tips
 
 1. **Use the public key from your Qlik Sense configuration** - The same public key that's configured in your Qlik Sense virtual proxy should be used for verification.
