@@ -51,11 +51,10 @@ const seaWrapper = {
     async initialize() {
         try {
             const seaModule = await import('node:sea');
-            const realSea = seaModule.default;
 
             // Replace our methods with the real ones
-            this.isSea = realSea.isSea.bind(realSea);
-            this.getAsset = realSea.getAsset.bind(realSea);
+            this.isSea = seaModule.isSea;
+            this.getAsset = seaModule.getAsset;
         } catch {
             // SEA module not available, keep our fallback implementations
             // This is expected in test environments or when not using SEA
