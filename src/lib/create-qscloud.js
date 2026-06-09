@@ -1,12 +1,18 @@
-const jsonWebToken = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
-const forge = require('node-forge');
-const uid = require('uid-safe');
+import jsonWebToken from 'jsonwebtoken';
+import fs from 'node:fs';
+import path from 'node:path';
+import forge from 'node-forge';
+import uid from 'uid-safe';
 
-const { logger, setLoggingLevel } = require('../globals');
-const { verifyCertificatesExist } = require('./certificates');
+import { logger, setLoggingLevel } from '../globals.js';
+import { verifyCertificatesExist } from './certificates.js';
 
+/**
+ * Creates a JWT for use with Qlik Sense Cloud.
+ *
+ * @param {object} options - Parsed CLI options for JWT creation.
+ * @returns {Promise<boolean>} True if JWT was created successfully, false otherwise.
+ */
 const jwtCreateQscloud = async (options) => {
     try {
         // Set log level
@@ -150,7 +156,6 @@ const jwtCreateQscloud = async (options) => {
 
         // Should normal or minimal output be used?
         if (options?.minimalOutput === true) {
-            // eslint-disable-next-line no-console
             console.log(token);
         } else {
             logger.info(token);
@@ -163,6 +168,4 @@ const jwtCreateQscloud = async (options) => {
     }
 };
 
-module.exports = {
-    jwtCreateQscloud,
-};
+export { jwtCreateQscloud };

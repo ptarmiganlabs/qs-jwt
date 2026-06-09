@@ -11,13 +11,13 @@ body:
   - type: input
     attributes:
       label: What version of QS JWT are you using?
-      description: '`node qs-jwt.js --version` or `qs-jwt --version` - For example: 2.3.1'
+      description: '`node src/qs-jwt.js --version` or `qs-jwt --version` - For example: 2.3.1'
     validations:
       required: true
   - type: input
     attributes:
       label: Which version(s) of QS JWT work for you?
-      description: '`node qs-jwt.js --version` or `qs-jwt --version` - For example: 2.2.0'
+      description: '`node src/qs-jwt.js --version` or `qs-jwt --version` - For example: 2.2.0'
     validations:
       required: true
   - type: input

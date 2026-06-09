@@ -1,7 +1,22 @@
-const winston = require('winston');
+import winston from 'winston';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import sea from './lib/sea-wrapper.js';
 
-// Get app version from package.json file
-const appVersion = require('./package.json').version;
+// Initialize SEA wrapper synchronously (required for CJS bundle in SEA)
+sea.initializeSync();
+
+let appVersion;
+if (sea.isSea()) {
+    // Running as SEA binary - read package.json from bundled assets
+    const packageJson = sea.getAsset('package.json', 'utf8');
+    appVersion = JSON.parse(packageJson).version;
+} else {
+    // Running as regular Node.js - read package.json from filesystem
+    appVersion = JSON.parse(
+        readFileSync(fileURLToPath(new URL('../package.json', import.meta.url)))
+    ).version;
+}
 
 // Set up logger with timestamps and colors, and optional logging to disk file
 const logTransports = [];
@@ -28,22 +43,19 @@ const logger = winston.createLogger({
 });
 
 /**
- * Functions to get/set current console logging level
- * @returns
+ * Gets the current console logging level.
+ *
+ * @returns {string} The current console logging level.
  */
 const getLoggingLevel = () => logTransports.find((transport) => transport.name === 'console').level;
 
 /**
+ * Sets the console logging level.
  *
- * @param {*} newLevel
+ * @param {string} newLevel - The new logging level to set.
  */
 const setLoggingLevel = (newLevel) => {
     logTransports.find((transport) => transport.name === 'console').level = newLevel;
 };
 
-module.exports = {
-    logger,
-    appVersion,
-    getLoggingLevel,
-    setLoggingLevel,
-};
+export { logger, appVersion, getLoggingLevel, setLoggingLevel };

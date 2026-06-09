@@ -1,0 +1,8 @@
+{
+    "main": "build.cjs",
+    "output": "sea-prep.blob",
+    "disableExperimentalSEAWarning": true,
+    "assets": {
+        "package.json": "./package.json"
+    }
+}

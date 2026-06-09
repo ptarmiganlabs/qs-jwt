@@ -113,3 +113,10 @@ dist
 .tern-port
 qs-jwt
 qs-jwt.cjs
+qs-jwt.exe
+build.cjs
+build.mjs
+sea-prep.blob
+
+# Project specific files
+qs-jwt--local--*

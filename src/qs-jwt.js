@@ -1,12 +1,9 @@
-const { Command, Option } = require('commander');
-const { logger, appVersion } = require('./globals');
+import { Command, Option } from 'commander';
+import { logger, appVersion } from './globals.js';
 
-const { jwtCreateQseow } = require('./lib/create-qseow');
-const { jwtCreateQscloud } = require('./lib/create-qscloud');
-const {
-    createQseowAssertOptions,
-    createCloudAssertOptions,
-} = require('./lib/create-assert-options');
+import { jwtCreateQseow } from './lib/create-qseow.js';
+import { jwtCreateQscloud } from './lib/create-qscloud.js';
+import { createQseowAssertOptions, createCloudAssertOptions } from './lib/create-assert-options.js';
 
 const program = new Command();
 
