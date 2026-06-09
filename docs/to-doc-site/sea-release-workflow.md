@@ -55,7 +55,7 @@ The SEA build keeps the existing release hardening in place:
 - Windows binaries have Authenticode signing code available in the scripts (currently disabled, matching Butler SOS).
 - Linux release artifacts are zipped and scanned by the existing VirusTotal workflow.
 
-In addition, the SEA build explicitly removes any pre-existing signature from the copied Node.js executable before injecting the application payload, then signs the final binary again.
+In addition, the SEA build removes any pre-existing signature from the copied Node.js executable before injecting the application payload. macOS binaries are then re-signed and notarized (and Windows binaries are re-signed only when signing is enabled).
 
 ## SBOM
 
