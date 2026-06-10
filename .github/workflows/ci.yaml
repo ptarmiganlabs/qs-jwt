@@ -221,17 +221,13 @@ jobs:
             - name: Install GitHub CLI
               shell: powershell
               run: |
-                  if (Get-Command gh -ErrorAction SilentlyContinue) {
-                      Write-Output "GitHub CLI is already installed"
-                  } else {
-                      $ghVersion = "2.67.0"
-                      $zipFile = "gh_${ghVersion}_windows_amd64.zip"
-                      Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v$ghVersion/$zipFile" -OutFile $zipFile
-                      $extractPath = Join-Path $env:RUNNER_TEMP "gh-cli"
-                      Expand-Archive $zipFile -DestinationPath $extractPath
-                      $binPath = Join-Path $extractPath "gh_${ghVersion}_windows_amd64\bin"
-                      Add-Content -Path $env:GITHUB_PATH -Value $binPath
-                  }
+                  $ghVersion = "2.67.0"
+                  $zipFile = "gh_${ghVersion}_windows_amd64.zip"
+                  Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v$ghVersion/$zipFile" -OutFile $zipFile
+                  $extractPath = Join-Path $env:RUNNER_TEMP "gh-cli"
+                  Expand-Archive $zipFile -DestinationPath $extractPath
+                  $binPath = Join-Path $extractPath "gh_${ghVersion}_windows_amd64\bin"
+                  Add-Content -Path $env:GITHUB_PATH -Value $binPath
 
             - name: Build binaries
               env:
