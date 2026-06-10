@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.13.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.12.0...qs-jwt-v1.13.0) (2026-06-10)
+
+
+### Features
+
+* Add command for decoding JWTs ([0209fa3](https://github.com/ptarmiganlabs/qs-jwt/commit/0209fa34c373c800d8e26b1c912a73e19edcdc46))
+* Add GitHub Actions workflow for security analysis with zizmor ([1408fb0](https://github.com/ptarmiganlabs/qs-jwt/commit/1408fb00feb259795078bea0ab6ad52ad88c2de4))
+* Add unit tests framework and initial set of tests ([76e5460](https://github.com/ptarmiganlabs/qs-jwt/commit/76e5460000089d856e5de7c34fed2239581cb3c1))
+* Implement additional unit tests ([7c88a79](https://github.com/ptarmiganlabs/qs-jwt/commit/7c88a796806f5a7e6f2a967383c0065317909a7e))
+
+
+### Bug Fixes
+
+* pin action versions in workflow files ([1d7362b](https://github.com/ptarmiganlabs/qs-jwt/commit/1d7362b692e87b3c1d2d97575da4171f7ada6df6))
+* use npm ci with package-lock.json in Dockerfile for reproducible builds ([093b553](https://github.com/ptarmiganlabs/qs-jwt/commit/093b5530bf946bbc3aa8af492e1584da0235547e))
+
+
+### Miscellaneous
+
+* Add 7-day cooldown for npm packages ([a796fdb](https://github.com/ptarmiganlabs/qs-jwt/commit/a796fdb638eeccd908f973008de619bc47007542))
+* Add documentation guidelines for feature updates and changes ([4d30bcf](https://github.com/ptarmiganlabs/qs-jwt/commit/4d30bcf5b313c6d16111f3f1a5d5addb1fff18a2))
+* Add GitNexus skills and guidelines for code intelligence and refactoring ([839f9ae](https://github.com/ptarmiganlabs/qs-jwt/commit/839f9aeaa4b835c69ce9a08c54933d401d2943f8))
+* Change the entire codebase to use ESM instead of CJS ([d69a854](https://github.com/ptarmiganlabs/qs-jwt/commit/d69a8548f1fa0def4402d670a89f382ab723cf38))
+* Refactor project structure and update build scripts ([01185cb](https://github.com/ptarmiganlabs/qs-jwt/commit/01185cb72a52a3cbbacbf6785915413b5e5fe240))
+* Refactor to use SEA and update CI/build pipeline ([9d747f6](https://github.com/ptarmiganlabs/qs-jwt/commit/9d747f61f0f58b0bd38c62f878e2a7e2e4cb5654))
+* Restructure source code to be more maintainable ([6bf51eb](https://github.com/ptarmiganlabs/qs-jwt/commit/6bf51eb243c353ca0dfdd116224f05a16f0bf189))
+
 ## [1.12.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.11.6...qs-jwt-v1.12.0) (2024-06-04)
 
 
