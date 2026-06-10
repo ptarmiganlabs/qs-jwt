@@ -4,9 +4,13 @@ on:
   release:
     types: [published]
 
+permissions: {}
+
 jobs:
   virustotal:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: |
       github.event_name != 'pull_request' &&
       github.repository_owner == 'ptarmiganlabs'
