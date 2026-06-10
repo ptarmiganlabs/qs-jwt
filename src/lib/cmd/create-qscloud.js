@@ -141,9 +141,11 @@ const jwtCreateQscloud = async (options) => {
             subType: 'user',
             name: options.username,
             email: options.useremail,
-            email_verified: options.useremailVerified,
             group: options.groups,
         };
+        if (options.useremail) {
+            payload.email_verified = options.useremailVerified;
+        }
         logger.debug(`JWT payload: ${JSON.stringify(payload, null, 2)}`);
 
         // Create the JWT

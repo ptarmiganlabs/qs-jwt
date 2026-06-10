@@ -98,6 +98,27 @@ describe('util/assert-options', () => {
             createCloudAssertOptions(options);
             expect(process.exit).not.toHaveBeenCalled();
         });
+
+        it('should exit when useremail is provided without useremailVerified', () => {
+            const options = { useremail: 'test@example.com' };
+            createCloudAssertOptions(options);
+            expect(process.exit).toHaveBeenCalledWith(1);
+            expect(logger.error).toHaveBeenCalledWith(
+                '--useremail-verified is required when --useremail is provided.'
+            );
+        });
+
+        it('should not exit when useremail and useremailVerified are both omitted', () => {
+            const options = { certCreate: 'false' };
+            createCloudAssertOptions(options);
+            expect(process.exit).not.toHaveBeenCalled();
+        });
+
+        it('should not exit when useremailVerified is explicitly false', () => {
+            const options = { useremail: 'test@example.com', useremailVerified: 'false' };
+            createCloudAssertOptions(options);
+            expect(process.exit).not.toHaveBeenCalled();
+        });
     });
 
     describe('createDecodeAssertOptions', () => {

@@ -170,8 +170,6 @@ describe('qs-jwt', () => {
                 'node',
                 'qs-jwt',
                 'create-qscloud',
-                '--useremail-verified',
-                'true',
                 '--issuer',
                 'issuer',
                 '--keyid',

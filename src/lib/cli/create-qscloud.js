@@ -37,12 +37,12 @@ const setupCreateQscloudCommand = (program) => {
                 .choices(['error', 'warn', 'info', 'verbose', 'debug'])
                 .default('info')
         )
-.option('--useremail <email>', 'Optional email address to embed in the JWT')
-        .requiredOption(
+        .option('--useremail <email>', 'Optional email address to embed in the JWT')
+        .option(
             '--useremail-verified <name>',
             'Claim indicating that the creator of the JWT has verified that the email address belongs to the user.'
         )
-.option('--username <name>', 'Optional user name (e.g. John Smith) to embed in the JWT')
+        .option('--username <name>', 'Optional user name (e.g. John Smith) to embed in the JWT')
         .option('--groups <groups...>', 'Groups associated with the user. ')
         .requiredOption(
             '--issuer <issuer>',

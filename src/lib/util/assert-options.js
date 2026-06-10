@@ -44,6 +44,11 @@ const createCloudAssertOptions = (options) => {
             process.exit(1);
         }
     }
+
+    if (options.useremail && options.useremailVerified === undefined) {
+        logger.error('--useremail-verified is required when --useremail is provided.');
+        process.exit(1);
+    }
 };
 
 /**

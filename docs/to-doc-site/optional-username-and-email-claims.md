@@ -32,11 +32,10 @@ qs-jwt create-qseow \
   --cert-privatekey-file /path/to/private.pem
 ```
 
-Create a Qlik Sense Cloud JWT without display name or email (note: `--useremail-verified` is still required):
+Create a Qlik Sense Cloud JWT without display name or email (`--useremail-verified` is only needed if you also pass `--useremail`):
 
 ```bash
 qs-jwt create-qscloud \
-  --useremail-verified true \
   --issuer my-jwt-idp \
   --keyid my-key-id \
   --expires 1h \
