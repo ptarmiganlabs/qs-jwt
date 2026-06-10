@@ -4,8 +4,8 @@ import path from 'node:path';
 import forge from 'node-forge';
 import uid from 'uid-safe';
 
-import { logger, setLoggingLevel } from '../globals.js';
-import { verifyCertificatesExist } from './certificates.js';
+import { logger, setLoggingLevel } from '../../globals.js';
+import { verifyCertificatesExist } from '../util/certificates.js';
 
 /**
  * Creates a JWT for use with Qlik Sense Cloud.

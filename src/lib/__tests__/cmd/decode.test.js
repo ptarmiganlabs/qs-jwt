@@ -20,7 +20,7 @@ vi.mock('node:fs', () => ({
     },
 }));
 
-vi.mock('../../globals.js', () => ({
+vi.mock('../../../globals.js', () => ({
     logger: {
         error: vi.fn(),
         verbose: vi.fn(),
@@ -31,11 +31,11 @@ vi.mock('../../globals.js', () => ({
     setLoggingLevel: vi.fn(),
 }));
 
-import { jwtDecode } from '../decode-jwt.js';
-import { logger } from '../../globals.js';
+import { jwtDecode } from '../../cmd/decode.js';
+import { logger } from '../../../globals.js';
 import fs from 'node:fs';
 
-describe('decode-jwt', () => {
+describe('cmd/decode', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -93,7 +93,9 @@ describe('decode-jwt', () => {
             const result = await jwtDecode(options);
 
             expect(result).toBe(false);
-            expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('JWT file not found'));
+            expect(logger.error).toHaveBeenCalledWith(
+                expect.stringContaining('JWT file not found')
+            );
         });
 
         it('should return false when no JWT provided', async () => {
@@ -116,7 +118,9 @@ describe('decode-jwt', () => {
             const result = await jwtDecode(options);
 
             expect(result).toBe(false);
-            expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Invalid JWT format'));
+            expect(logger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Invalid JWT format')
+            );
         });
 
         it('should return false when decode returns null', async () => {
@@ -239,7 +243,9 @@ describe('decode-jwt', () => {
             mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
             mockVerify.mockReturnValue(mockPayload);
             fs.existsSync.mockReturnValue(true);
-            fs.readFileSync.mockReturnValue('-----BEGIN PUBLIC KEY-----\nfile-key\n-----END PUBLIC KEY-----');
+            fs.readFileSync.mockReturnValue(
+                '-----BEGIN PUBLIC KEY-----\nfile-key\n-----END PUBLIC KEY-----'
+            );
 
             const options = {
                 loglevel: 'info',
@@ -269,7 +275,9 @@ describe('decode-jwt', () => {
             const result = await jwtDecode(options);
 
             expect(result).toBe(false);
-            expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Public key file not found'));
+            expect(logger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Public key file not found')
+            );
         });
 
         it('should output JSON when minimalOutput is true', async () => {
@@ -332,6 +340,253 @@ describe('decode-jwt', () => {
             const result = await jwtDecode(options);
 
             expect(result).toBe(true);
+        });
+
+        it('should show expiration message with hours when expired > 60 minutes', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+            const mockHeader = { alg: 'RS256', typ: 'JWT' };
+            const expiredTime = Math.floor(Date.now() / 1000) - 7200; // 2 hours ago
+            const mockPayload = {
+                userId: 'testuser',
+                exp: expiredTime,
+                iat: expiredTime - 3600,
+            };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+            mockVerify.mockReturnValue(mockPayload);
+
+            const options = {
+                loglevel: 'info',
+                jwt: 'header.payload.signature',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            const output = consoleSpy.mock.calls.map((call) => call[0]).join('\n');
+            expect(output).toMatch(/2 hours/);
+
+            consoleSpy.mockRestore();
+        });
+
+        it('should detect token issued in the future', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+            const mockHeader = { alg: 'RS256', typ: 'JWT' };
+            const futureTime = Math.floor(Date.now() / 1000) + 3600; // 1 hour in future
+            const mockPayload = {
+                userId: 'testuser',
+                iat: futureTime,
+                exp: futureTime + 3600,
+            };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+            mockVerify.mockReturnValue(mockPayload);
+
+            const options = {
+                loglevel: 'info',
+                jwt: 'header.payload.signature',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            const output = consoleSpy.mock.calls.map((call) => call[0]).join('\n');
+            expect(output).toMatch(/issued in the future/);
+
+            consoleSpy.mockRestore();
+        });
+
+        it('should detect token not yet valid', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+            const mockHeader = { alg: 'RS256', typ: 'JWT' };
+            const futureTime = Math.floor(Date.now() / 1000) + 3600; // 1 hour in future
+            const mockPayload = {
+                userId: 'testuser',
+                nbf: futureTime,
+                iat: Math.floor(Date.now() / 1000),
+                exp: futureTime + 3600,
+            };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+            mockVerify.mockReturnValue(mockPayload);
+
+            const options = {
+                loglevel: 'info',
+                jwt: 'header.payload.signature',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            const output = consoleSpy.mock.calls.map((call) => call[0]).join('\n');
+            expect(output).toMatch(/not yet valid/);
+
+            consoleSpy.mockRestore();
+        });
+
+        it('should output verification details in JSON when minimalOutput is true', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+            const mockHeader = { alg: 'RS256', typ: 'JWT', kid: 'key-123' };
+            const mockPayload = {
+                userId: 'testuser',
+                iat: 1717948800,
+                exp: 9999999999,
+                aud: 'test-aud',
+                iss: 'test-issuer',
+            };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+            mockVerify.mockReturnValue(mockPayload);
+
+            const options = {
+                loglevel: 'error',
+                jwt: 'header.payload.signature',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+                minimalOutput: true,
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            expect(consoleSpy).toHaveBeenCalled();
+            const output = JSON.parse(consoleSpy.mock.calls[0][0]);
+
+            expect(output.verification).toBeDefined();
+            expect(output.verification.status).toBe('valid');
+            expect(output.verification.algorithm).toBe('RS256');
+            expect(output.verification.keyId).toBe('key-123');
+            expect(output.verification.integrity).toBe(true);
+            expect(output.verification.issuedAt).toBeDefined();
+            expect(output.verification.expiresAt).toBeDefined();
+            expect(output.verification.currentlyValid).toBe(true);
+            expect(output.verification.audience).toBe('test-aud');
+            expect(output.verification.audienceMatch).toBe(true);
+            expect(output.verification.issuer).toBe('test-issuer');
+
+            consoleSpy.mockRestore();
+        });
+
+        it('should output failure reason in JSON when verification fails', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+            const mockHeader = { alg: 'RS256', typ: 'JWT' };
+            const mockPayload = { userId: 'testuser' };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+            mockVerify.mockImplementation(() => {
+                throw new Error('invalid signature');
+            });
+
+            const options = {
+                loglevel: 'error',
+                jwt: 'header.payload.signature',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+                minimalOutput: true,
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            expect(consoleSpy).toHaveBeenCalled();
+            const output = JSON.parse(consoleSpy.mock.calls[0][0]);
+
+            expect(output.verification).toBeDefined();
+            expect(output.verification.status).toBe('invalid');
+            expect(output.verification.reason).toBe('invalid signature');
+
+            consoleSpy.mockRestore();
+        });
+
+        it('should display nbf field in payload when present', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+            const mockHeader = { alg: 'RS256', typ: 'JWT' };
+            const mockPayload = {
+                userId: 'testuser',
+                nbf: 1717948800,
+                iat: 1717948800,
+                exp: 9999999999,
+            };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+
+            const options = {
+                loglevel: 'info',
+                jwt: 'header.payload.signature',
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            const output = consoleSpy.mock.calls.map((call) => call[0]).join('\n');
+            expect(output).toContain('nbf');
+            expect(output).toMatch(/1717948800/);
+
+            consoleSpy.mockRestore();
+        });
+
+        it('should display array audience in normal output mode', async () => {
+            const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+            const mockHeader = { alg: 'RS256', typ: 'JWT' };
+            const mockPayload = {
+                userId: 'testuser',
+                aud: ['aud1', 'aud2'],
+                iat: 1717948800,
+                exp: 9999999999,
+            };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+            mockVerify.mockReturnValue(mockPayload);
+
+            const options = {
+                loglevel: 'info',
+                jwt: 'header.payload.signature',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            const output = consoleSpy.mock.calls.map((call) => call[0]).join('\n');
+            expect(output).toContain('aud1, aud2');
+
+            consoleSpy.mockRestore();
+        });
+
+        it('should handle expectedAudience with array audience match', async () => {
+            const mockHeader = { alg: 'RS256', typ: 'JWT' };
+            const mockPayload = {
+                userId: 'testuser',
+                aud: ['aud1', 'aud2', 'target-aud'],
+                exp: 9999999999,
+            };
+
+            mockDecode.mockReturnValue({ header: mockHeader, payload: mockPayload });
+            mockVerify.mockReturnValue(mockPayload);
+
+            const options = {
+                loglevel: 'info',
+                jwt: 'header.payload.signature',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+                expectedAudience: 'target-aud',
+            };
+
+            const result = await jwtDecode(options);
+
+            expect(result).toBe(true);
+            expect(mockVerify).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.any(String),
+                expect.objectContaining({ audience: 'target-aud' })
+            );
         });
     });
 });

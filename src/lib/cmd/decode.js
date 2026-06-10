@@ -1,7 +1,7 @@
 import jsonWebToken from 'jsonwebtoken';
 import fs from 'node:fs';
 
-import { logger, setLoggingLevel } from '../globals.js';
+import { logger, setLoggingLevel } from '../../globals.js';
 
 /**
  * Formats a Unix timestamp as a human-readable ISO date string.
