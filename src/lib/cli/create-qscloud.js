@@ -77,7 +77,7 @@ const setupCreateQscloudCommand = (program) => {
             new Option(
                 '--cert-create-expires-days <days>',
                 'Number of days the new certificate should be valid for'
-            ).argParser(parseInt)
+            ).argParser((value) => Number.parseInt(value, 10))
         )
         .option(
             '--minimal-output',
