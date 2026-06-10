@@ -219,7 +219,7 @@ jobs:
                   npm ci
 
             - name: Install GitHub CLI
-              shell: pwsh
+              shell: powershell
               run: |
                   if (Get-Command gh -ErrorAction SilentlyContinue) {
                       Write-Output "GitHub CLI is already installed"
@@ -240,7 +240,7 @@ jobs:
             - name: Upload to existing release
               env:
                   GH_TOKEN: ${{ github.token }}
-              shell: pwsh
+              shell: powershell
               run: |
                   gh release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip --clobber
 
