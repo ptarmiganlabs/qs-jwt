@@ -76,7 +76,6 @@ const setupCreateQseowCommand = (program) => {
         )
         .option('--cert-file-prefix <prefix>', 'Prefix to place before certificate file names', '')
         .addOption(
-        .addOption(
             new Option(
                 '--cert-create-expires-days <days>',
                 'Number of days the new certificate should be valid for'
