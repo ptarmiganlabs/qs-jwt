@@ -144,5 +144,45 @@ describe('qs-jwt', () => {
             expect(mockCreateQseowAssertOptions).toHaveBeenCalled();
             expect(mockJwtCreateQseow).toHaveBeenCalled();
         });
+
+        it('should allow create-qseow without username and useremail', async () => {
+            await run([
+                'node',
+                'qs-jwt',
+                'create-qseow',
+                '--userdir',
+                'DIR',
+                '--userid',
+                'user',
+                '--expires',
+                '1h',
+                '--audience',
+                'aud',
+                '--cert-privatekey',
+                '-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----',
+            ]);
+            expect(mockCreateQseowAssertOptions).toHaveBeenCalled();
+            expect(mockJwtCreateQseow).toHaveBeenCalled();
+        });
+
+        it('should allow create-qscloud without username and useremail', async () => {
+            await run([
+                'node',
+                'qs-jwt',
+                'create-qscloud',
+                '--useremail-verified',
+                'true',
+                '--issuer',
+                'issuer',
+                '--keyid',
+                'kid',
+                '--expires',
+                '1h',
+                '--cert-privatekey',
+                '-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----',
+            ]);
+            expect(mockCreateCloudAssertOptions).toHaveBeenCalled();
+            expect(mockJwtCreateQscloud).toHaveBeenCalled();
+        });
     });
 });
