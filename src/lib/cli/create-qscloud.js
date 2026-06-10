@@ -40,7 +40,7 @@ const setupCreateQscloudCommand = (program) => {
         .requiredOption('--useremail <email>', 'Email address that will be embedded in the JWT')
         .requiredOption(
             '--useremail-verified <name>',
-            'Claim indicating that the creator of thw JWT has verified that the email address belongs to the user.'
+            'Claim indicating that the creator of the JWT has verified that the email address belongs to the user.'
         )
         .requiredOption(
             '--username <name>',
