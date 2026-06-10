@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.14.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.13.0...qs-jwt-v1.14.0) (2026-06-10)
+
+
+### Features
+
+* make username and useremail optional ([12a5b7a](https://github.com/ptarmiganlabs/qs-jwt/commit/12a5b7a94e904747b8ed2960dd79cee3e2343398))
+
+
+### Bug Fixes
+
+* fix source code bug preventing build of binaries ([aff2909](https://github.com/ptarmiganlabs/qs-jwt/commit/aff2909ba1baf128159bc0055abf406ddfe6f3b2))
+
+
+### Documentation
+
+* Simplify README.md, pointing the user to the main doc site ([a0b2d49](https://github.com/ptarmiganlabs/qs-jwt/commit/a0b2d4944d8825306f02b242466d3eef98a94ced))
+
 ## [1.13.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.12.0...qs-jwt-v1.13.0) (2026-06-10)
 
 
