@@ -226,9 +226,11 @@ jobs:
                   $zipFile = "gh_${ghVersion}_windows_amd64.zip"
                   Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v$ghVersion/$zipFile" -OutFile $zipFile
                   $extractPath = Join-Path $env:RUNNER_TEMP "gh-cli"
-                  Expand-Archive $zipFile -DestinationPath $extractPath
-                  $binPath = Join-Path $extractPath "gh_${ghVersion}_windows_amd64\bin"
-                  $ghExePath = Join-Path $binPath "gh.exe"
+                  Expand-Archive $zipFile -DestinationPath $extractPath -Force
+                  $ghExePath = Get-ChildItem -Path $extractPath -Recurse -Filter "gh.exe" | Select-Object -First 1 -ExpandProperty FullName
+                  if (-not $ghExePath) {
+                      throw "gh.exe not found after extraction"
+                  }
                   echo "gh-path=$ghExePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
             - name: Build binaries
