@@ -15,7 +15,7 @@ const handleCreateQseow = async (options, command) => {
         createQseowAssertOptions(options);
 
         const res = await jwtCreateQseow(options, command);
-        logger.debug(`Call to jwtQseowCreate succeeded: ${res}`);
+        logger.debug(`Call to jwtCreateQseow succeeded: ${res}`);
     } catch (err) {
         logger.error(`MAIN jwt create: ${err}`);
     }
