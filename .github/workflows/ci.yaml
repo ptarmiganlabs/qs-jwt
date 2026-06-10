@@ -219,6 +219,7 @@ jobs:
                   npm ci
 
             - name: Install GitHub CLI
+              id: install-gh
               shell: powershell
               run: |
                   $ghVersion = "2.67.0"
@@ -227,7 +228,8 @@ jobs:
                   $extractPath = Join-Path $env:RUNNER_TEMP "gh-cli"
                   Expand-Archive $zipFile -DestinationPath $extractPath
                   $binPath = Join-Path $extractPath "gh_${ghVersion}_windows_amd64\bin"
-                  Add-Content -Path $env:GITHUB_PATH -Value $binPath
+                  $ghExePath = Join-Path $binPath "gh.exe"
+                  echo "gh-path=$ghExePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
             - name: Build binaries
               env:
@@ -239,7 +241,7 @@ jobs:
                   GH_TOKEN: ${{ github.token }}
               shell: powershell
               run: |
-                  gh release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip --clobber
+                  & "${{ steps.install-gh.outputs.gh-path }}" release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip --clobber
 
             - name: Tidy up before exiting
               run: |
