@@ -5,6 +5,30 @@
 
 ### Miscellaneous
 
+* **main:** release qs-jwt 1.14.1 ([46664fe](https://github.com/ptarmiganlabs/qs-jwt/commit/46664fef4cd7d51805e06a4cdd5146b73569236a))
+* **main:** release qs-jwt 1.14.1 ([77a1b94](https://github.com/ptarmiganlabs/qs-jwt/commit/77a1b9404f89a6ff9eed9fafa28d8c56aed07da5))
+* **main:** release qs-jwt 1.14.1 ([d39cbf5](https://github.com/ptarmiganlabs/qs-jwt/commit/d39cbf5a19f50b8dfc848a2dc24aa34736644990))
+* **main:** release qs-jwt 1.14.1 ([459bca8](https://github.com/ptarmiganlabs/qs-jwt/commit/459bca8bc2e08814d3dc633335bf09a730fdfa97))
+* **main:** release qs-jwt 1.14.1 ([78e8df0](https://github.com/ptarmiganlabs/qs-jwt/commit/78e8df0e37a77a3d932fff12f467147c89e4c725))
+* **main:** release qs-jwt 1.14.1 ([80b79ef](https://github.com/ptarmiganlabs/qs-jwt/commit/80b79ef9692addbe8e5a6a5cefc2dbf520f96f17))
+* **main:** release qs-jwt 1.14.1 ([f28ed0b](https://github.com/ptarmiganlabs/qs-jwt/commit/f28ed0b561210d4871d0bc1864ad485c25671fdc))
+* **main:** release qs-jwt 1.14.1 ([ddf02f3](https://github.com/ptarmiganlabs/qs-jwt/commit/ddf02f3213c94370bac4385fa6b1c89a2ec56655))
+* **main:** release qs-jwt 1.14.1 ([b1162ce](https://github.com/ptarmiganlabs/qs-jwt/commit/b1162ce78057a714f3887f2f73b0ce796738d0eb))
+* **main:** release qs-jwt 1.14.1 ([d46d1e6](https://github.com/ptarmiganlabs/qs-jwt/commit/d46d1e6483389209cd8513a9a4edf4c89281b600))
+* **main:** release qs-jwt 1.14.1 ([3556634](https://github.com/ptarmiganlabs/qs-jwt/commit/35566342c403717d537ad14779991b9793ae0613))
+* **main:** release qs-jwt 1.14.1 ([cd5b755](https://github.com/ptarmiganlabs/qs-jwt/commit/cd5b7550ba580adae7dcdf1a8f3b871426113381))
+
+
+### Refactoring
+
+* Make upload of built binaries more stable ([7b0ad77](https://github.com/ptarmiganlabs/qs-jwt/commit/7b0ad77e5bfb7202f5447d79d1506fbcd5cb9faf))
+* update CodeQL workflow and permissions in virus scan ([0d18d81](https://github.com/ptarmiganlabs/qs-jwt/commit/0d18d81a37b605ef3a8ff8ef3a9fb8ec407614cf))
+
+## [1.14.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.14.1...qs-jwt-v1.14.1) (2026-06-10)
+
+
+### Miscellaneous
+
 * **main:** release qs-jwt 1.14.1 ([d39cbf5](https://github.com/ptarmiganlabs/qs-jwt/commit/d39cbf5a19f50b8dfc848a2dc24aa34736644990))
 * **main:** release qs-jwt 1.14.1 ([459bca8](https://github.com/ptarmiganlabs/qs-jwt/commit/459bca8bc2e08814d3dc633335bf09a730fdfa97))
 * **main:** release qs-jwt 1.14.1 ([78e8df0](https://github.com/ptarmiganlabs/qs-jwt/commit/78e8df0e37a77a3d932fff12f467147c89e4c725))
