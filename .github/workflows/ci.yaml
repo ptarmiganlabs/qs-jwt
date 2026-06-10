@@ -98,16 +98,11 @@ jobs:
                   find ./build -type f -name "*.json" -o -name "*.spdx*" -exec ls -la {} \;
 
             - name: Upload SBOM to Release
-              uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1.20.0
-              with:
-                  allowUpdates: true
-                  omitBodyDuringUpdate: true
-                  omitNameDuringUpdate: true
-                  # artifactContentType: raw
-                  draft: true
-                  artifacts: './build/**/*.spdx.json'
-                  token: ${{ github.token }}
-                  tag: ${{ needs.release-please.outputs.release_tag_name }}
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  shopt -s globstar
+                  gh release upload ${{ needs.release-please.outputs.release_tag_name }} ./build/**/*.spdx.json --clobber
 
             - name: Upload SBOM as Workflow Artifact (backup)
               uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
@@ -159,23 +154,19 @@ jobs:
               run: |
                   npm ci
 
+            - name: Install GitHub CLI
+              run: brew install gh
+
             - name: Build binaries
               env:
                   RELEASE_VERSION: ${{ needs.release-please.outputs.release_version }}
               run: bash ./scripts/release-macos.sh
 
             - name: Upload to existing release
-              uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1.20.0
-              with:
-                  allowUpdates: true
-                  omitBodyDuringUpdate: true
-                  omitNameDuringUpdate: true
-                  artifactContentType: raw
-                  # artifactContentType: application/zip
-                  draft: true
-                  tag: ${{ needs.release-please.outputs.release_tag_name }}
-                  artifacts: ./qs-jwt-${{ needs.release-please.outputs.release_version }}-macos-arm64.zip
-                  token: ${{ github.token }}
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-macos-arm64.zip --clobber
 
             - name: Tidy up before exiting
               run: |
@@ -226,23 +217,32 @@ jobs:
             - name: Install dependencies (including build tooling)
               run: |
                   npm ci
+
+            - name: Install GitHub CLI
+              shell: pwsh
+              run: |
+                  if (Get-Command gh -ErrorAction SilentlyContinue) {
+                      Write-Output "GitHub CLI is already installed"
+                  } else {
+                      $ghVersion = "2.67.0"
+                      $zipFile = "gh_${ghVersion}_windows_amd64.zip"
+                      Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v$ghVersion/$zipFile" -OutFile $zipFile
+                      Expand-Archive $zipFile -DestinationPath .
+                      $binPath = Join-Path $PWD "gh_${ghVersion}_windows_amd64\bin"
+                      echo $binPath | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+                  }
+
             - name: Build binaries
               env:
                   RELEASE_VERSION: ${{ needs.release-please.outputs.release_version }}
               run: ./scripts/release-win.ps1
 
             - name: Upload to existing release
-              uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1.20.0
-              with:
-                  allowUpdates: true
-                  omitBodyDuringUpdate: true
-                  omitNameDuringUpdate: true
-                  artifactContentType: raw
-                  # artifactContentType: application/zip
-                  draft: true
-                  tag: ${{ needs.release-please.outputs.release_tag_name }}
-                  artifacts: ./qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip
-                  token: ${{ github.token }}
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              shell: pwsh
+              run: |
+                  gh release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip --clobber
 
             - name: Tidy up before exiting
               run: |
@@ -291,17 +291,10 @@ jobs:
               run: bash ./scripts/release-linux.sh
 
             - name: Upload to existing release
-              uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1.20.0
-              with:
-                  allowUpdates: true
-                  omitBodyDuringUpdate: true
-                  omitNameDuringUpdate: true
-                  artifactContentType: raw
-                  # artifactContentType: application/zip
-                  draft: true
-                  tag: ${{ needs.release-please.outputs.release_tag_name }}
-                  artifacts: ./qs-jwt-${{ needs.release-please.outputs.release_version }}-linux-x64.zip
-                  token: ${{ github.token }}
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-linux-x64.zip --clobber
 
             - name: Tidy up before exiting
               run: |
