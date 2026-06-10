@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('../../globals.js', () => ({
+vi.mock('../../../globals.js', () => ({
     logger: {
         error: vi.fn(),
         verbose: vi.fn(),
@@ -10,10 +10,14 @@ vi.mock('../../globals.js', () => ({
     },
 }));
 
-import { createQseowAssertOptions, createCloudAssertOptions } from '../create-assert-options.js';
-import { logger } from '../../globals.js';
+import {
+    createQseowAssertOptions,
+    createCloudAssertOptions,
+    createDecodeAssertOptions,
+} from '../../util/assert-options.js';
+import { logger } from '../../../globals.js';
 
-describe('create-assert-options', () => {
+describe('util/assert-options', () => {
     let originalExit;
 
     beforeEach(() => {
@@ -92,6 +96,67 @@ describe('create-assert-options', () => {
         it('should not exit when certCreate is true and certCreateExpiresDays is valid', () => {
             const options = { certCreate: 'true', certCreateExpiresDays: 30 };
             createCloudAssertOptions(options);
+            expect(process.exit).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('createDecodeAssertOptions', () => {
+        it('should not exit when jwt is provided', () => {
+            const options = { jwt: 'header.payload.signature' };
+            createDecodeAssertOptions(options);
+            expect(process.exit).not.toHaveBeenCalled();
+        });
+
+        it('should not exit when jwtFile is provided', () => {
+            const options = { jwtFile: '/path/to/jwt.txt' };
+            createDecodeAssertOptions(options);
+            expect(process.exit).not.toHaveBeenCalled();
+        });
+
+        it('should exit when neither jwt nor jwtFile is provided', () => {
+            const options = {};
+            createDecodeAssertOptions(options);
+            expect(process.exit).toHaveBeenCalledWith(1);
+            expect(logger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Either --jwt or --jwt-file must be provided')
+            );
+        });
+
+        it('should exit when both jwt and jwtFile are provided', () => {
+            const options = { jwt: 'header.payload.signature', jwtFile: '/path/to/jwt.txt' };
+            createDecodeAssertOptions(options);
+            expect(process.exit).toHaveBeenCalledWith(1);
+            expect(logger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Only one of --jwt or --jwt-file')
+            );
+        });
+
+        it('should exit when expectedAudience is provided without public key', () => {
+            const options = { jwt: 'header.payload.signature', expectedAudience: 'test-aud' };
+            createDecodeAssertOptions(options);
+            expect(process.exit).toHaveBeenCalledWith(1);
+            expect(logger.error).toHaveBeenCalledWith(
+                expect.stringContaining('--expected-audience requires a public key')
+            );
+        });
+
+        it('should not exit when expectedAudience is provided with certPublickey', () => {
+            const options = {
+                jwt: 'header.payload.signature',
+                expectedAudience: 'test-aud',
+                certPublickey: '-----BEGIN PUBLIC KEY-----\ntest\n-----END PUBLIC KEY-----',
+            };
+            createDecodeAssertOptions(options);
+            expect(process.exit).not.toHaveBeenCalled();
+        });
+
+        it('should not exit when expectedAudience is provided with certPublickeyFile', () => {
+            const options = {
+                jwt: 'header.payload.signature',
+                expectedAudience: 'test-aud',
+                certPublickeyFile: '/path/to/public.pem',
+            };
+            createDecodeAssertOptions(options);
             expect(process.exit).not.toHaveBeenCalled();
         });
     });

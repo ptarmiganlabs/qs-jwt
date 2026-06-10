@@ -41,7 +41,7 @@ vi.mock('uid-safe', () => ({
     },
 }));
 
-vi.mock('../../globals.js', () => ({
+vi.mock('../../../globals.js', () => ({
     logger: {
         error: vi.fn(),
         verbose: vi.fn(),
@@ -52,16 +52,16 @@ vi.mock('../../globals.js', () => ({
     setLoggingLevel: vi.fn(),
 }));
 
-vi.mock('../certificates.js', () => ({
+vi.mock('../../util/certificates.js', () => ({
     verifyCertificatesExist: vi.fn(),
 }));
 
-import { jwtCreateQscloud } from '../create-qscloud.js';
-import { logger } from '../../globals.js';
-import { verifyCertificatesExist } from '../certificates.js';
+import { jwtCreateQscloud } from '../../cmd/create-qscloud.js';
+import { logger } from '../../../globals.js';
+import { verifyCertificatesExist } from '../../util/certificates.js';
 import fs from 'node:fs';
 
-describe('create-qscloud', () => {
+describe('cmd/create-qscloud', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockSign.mockReturnValue('mock-cloud-jwt-token');
@@ -108,7 +108,9 @@ describe('create-qscloud', () => {
 
         it('should create JWT with private key from file', async () => {
             verifyCertificatesExist.mockResolvedValue(true);
-            fs.readFileSync.mockReturnValue('-----BEGIN PRIVATE KEY-----\nfile-key\n-----END PRIVATE KEY-----');
+            fs.readFileSync.mockReturnValue(
+                '-----BEGIN PRIVATE KEY-----\nfile-key\n-----END PRIVATE KEY-----'
+            );
 
             const options = {
                 loglevel: 'info',
@@ -148,9 +150,15 @@ describe('create-qscloud', () => {
 
             mockGenerateKeyPair.mockReturnValue(mockKeys);
             mockCreateCertificate.mockReturnValue(mockCert);
-            mockPki.publicKeyToPem.mockReturnValue('-----BEGIN PUBLIC KEY-----\npublic\n-----END PUBLIC KEY-----');
-            mockPki.privateKeyToPem.mockReturnValue('-----BEGIN PRIVATE KEY-----\nprivate\n-----END PRIVATE KEY-----');
-            mockPki.certificateToPem.mockReturnValue('-----BEGIN CERTIFICATE-----\ncert\n-----END CERTIFICATE-----');
+            mockPki.publicKeyToPem.mockReturnValue(
+                '-----BEGIN PUBLIC KEY-----\npublic\n-----END PUBLIC KEY-----'
+            );
+            mockPki.privateKeyToPem.mockReturnValue(
+                '-----BEGIN PRIVATE KEY-----\nprivate\n-----END PRIVATE KEY-----'
+            );
+            mockPki.certificateToPem.mockReturnValue(
+                '-----BEGIN CERTIFICATE-----\ncert\n-----END CERTIFICATE-----'
+            );
 
             const options = {
                 loglevel: 'info',
@@ -171,7 +179,9 @@ describe('create-qscloud', () => {
             expect(mockGenerateKeyPair).toHaveBeenCalledWith(4096);
             expect(mockCreateCertificate).toHaveBeenCalled();
             expect(fs.writeFileSync).toHaveBeenCalledTimes(3);
-            expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Created new certificate'));
+            expect(logger.info).toHaveBeenCalledWith(
+                expect.stringContaining('Created new certificate')
+            );
         });
 
         it('should return false when no certificate or key is available', async () => {
@@ -239,9 +249,7 @@ describe('create-qscloud', () => {
             const result = await jwtCreateQscloud(options);
 
             expect(result).toBe(false);
-            expect(logger.error).toHaveBeenCalledWith(
-                expect.stringContaining('JWT-CREATE-QSEOW')
-            );
+            expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('JWT-CREATE-QSEOW'));
         });
 
         it('should use correct audience for Qlik Sense Cloud', async () => {

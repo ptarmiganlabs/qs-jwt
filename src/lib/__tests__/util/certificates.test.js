@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('../../globals.js', () => ({
+vi.mock('../../../globals.js', () => ({
     logger: {
         error: vi.fn(),
         verbose: vi.fn(),
@@ -10,10 +10,10 @@ vi.mock('../../globals.js', () => ({
     },
 }));
 
-import { verifyCertificatesExist } from '../certificates.js';
-import { logger } from '../../globals.js';
+import { verifyCertificatesExist } from '../../util/certificates.js';
+import { logger } from '../../../globals.js';
 
-describe('certificates', () => {
+describe('util/certificates', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -23,18 +23,14 @@ describe('certificates', () => {
             const options = { certPrivatekeyFile: 'package.json' };
             const result = await verifyCertificatesExist(options);
             expect(result).toBe(true);
-            expect(logger.verbose).toHaveBeenCalledWith(
-                expect.stringContaining('exists')
-            );
+            expect(logger.verbose).toHaveBeenCalledWith(expect.stringContaining('exists'));
         });
 
         it('should return false when cert file does not exist', async () => {
             const options = { certPrivatekeyFile: '/nonexistent/path/key.pem' };
             const result = await verifyCertificatesExist(options);
             expect(result).toBe(false);
-            expect(logger.error).toHaveBeenCalledWith(
-                expect.stringContaining('missing')
-            );
+            expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('missing'));
         });
 
         it('should return false when options.certPrivatekeyFile is undefined', async () => {

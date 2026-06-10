@@ -1,62 +1,9 @@
-import { Command, Option } from 'commander';
-import { logger, appVersion } from './globals.js';
+import { Command } from 'commander';
+import { appVersion } from './globals.js';
 
-import { jwtCreateQseow } from './lib/create-qseow.js';
-import { jwtCreateQscloud } from './lib/create-qscloud.js';
-import { jwtDecode } from './lib/decode-jwt.js';
-import { createQseowAssertOptions, createCloudAssertOptions } from './lib/create-assert-options.js';
-import { createDecodeAssertOptions } from './lib/decode-assert-options.js';
-
-/**
- * Action handler for the create-qseow command.
- *
- * @param {object} options - Parsed CLI options.
- * @param {object} command - Commander command object.
- */
-const handleCreateQseow = async (options, command) => {
-    try {
-        createQseowAssertOptions(options);
-
-        const res = await jwtCreateQseow(options, command);
-        logger.debug(`Call to jwtQseowCreate succeeded: ${res}`);
-    } catch (err) {
-        logger.error(`MAIN jwt create: ${err}`);
-    }
-};
-
-/**
- * Action handler for the create-qscloud command.
- *
- * @param {object} options - Parsed CLI options.
- * @param {object} command - Commander command object.
- */
-const handleCreateQscloud = async (options, command) => {
-    try {
-        createCloudAssertOptions(options);
-
-        const res = await jwtCreateQscloud(options, command);
-        logger.debug(`Call to jwtCreateQscloud succeeded: ${res}`);
-    } catch (err) {
-        logger.error(`MAIN jwt create: ${err}`);
-    }
-};
-
-/**
- * Action handler for the decode command.
- *
- * @param {object} options - Parsed CLI options.
- * @param {object} command - Commander command object.
- */
-const handleDecode = async (options, command) => {
-    try {
-        createDecodeAssertOptions(options);
-
-        const res = await jwtDecode(options, command);
-        logger.debug(`Call to jwtDecode succeeded: ${res}`);
-    } catch (err) {
-        logger.error(`MAIN jwt decode: ${err}`);
-    }
-};
+import { setupCreateQseowCommand } from './lib/cli/create-qseow.js';
+import { setupCreateQscloudCommand } from './lib/cli/create-qscloud.js';
+import { setupDecodeCommand } from './lib/cli/decode.js';
 
 /**
  * Creates and configures the Commander program.
@@ -73,153 +20,9 @@ const createProgram = () => {
             'This is a tool that creates JWTs (JSON Web Tokens) that can be used with Qlik Sense Enterprise on Windows (self-managed) as well as Qlik Sense Cloud/SaaS.\nThe JWTs can be used when accessing Sense APIs from third party applications and services.\nJWTs are usually preferred over certificates as JWTs embed a specific user, which means access control can be applied when JWTs are used. '
         );
 
-    // -----------------------------
-    // create-qseow
-    program
-        .command('create-qseow')
-        .allowExcessArguments(false)
-        .description(
-            'Create a JWT for use with client-managed Qlik Sense (a.k.a Qlik Sense Enterprise on Windows).'
-        )
-        .action(handleCreateQseow)
-        .addOption(
-            new Option('--loglevel <level>', 'Logging level')
-                .choices(['error', 'warn', 'info', 'verbose', 'debug'])
-                .default('info')
-        )
-        .requiredOption(
-            '--userdir <directory>',
-            'user directory (e.g. MYDIRNAME) that will be embedded in the JWT'
-        )
-        .requiredOption(
-            '--userid <userid>',
-            'user ID (e.g. johnsmith) that will be embedded in the JWT'
-        )
-        .requiredOption(
-            '--username <name>',
-            'User name (e.g. John Smith) that will be embedded in the JWT'
-        )
-        .requiredOption('--useremail <email>', 'Email address that will be embedded in the JWT')
-        .option('--groups <groups...>', 'Groups associated with the user dir/ID.')
-        .requiredOption(
-            '--expires <time>',
-            'Time during which the JWT will be valid. Examples: 60m (60 minutes), 48h (48 hours), 365d (365 days), 5y (5 years)'
-        )
-        .requiredOption(
-            '--audience <audience>',
-            'JWT audience field. Audience in JWT must match the audience defined in the QSEoW virtual proxy being used'
-        )
-        .option(
-            '--cert-privatekey-file <file>',
-            'File containing private key of certificate that will be used to sign the JWT'
-        )
-        .option(
-            '--cert-privatekey <privatekey>',
-            'Private key of certificate that will be used to sign the JWT.'
-        )
-        .addOption(
-            new Option('--cert-create [true|false]', 'Should a new certificate be created?')
-                .choices(['true', 'false'])
-                .default('false')
-        )
-        .option('--cert-file-prefix <prefix>', 'Prefix to place before certificate file names', '')
-        .addOption(
-            new Option(
-                '--cert-create-expires-days <days>',
-                'Number of days the new certificate should be valid for'
-            ).argParser(parseInt)
-        )
-        .option(
-            '--minimal-output',
-            'Output only the JWT token, without any additional info. Useful with log level warn or error'
-        );
-
-    // -----------------------------
-    // create-qscloud
-    program
-        .command('create-qscloud')
-        .allowExcessArguments(false)
-        .description('Create a JWT for use with Qlik Sense Cloud.')
-        .action(handleCreateQscloud)
-        .addOption(
-            new Option('--loglevel <level>', 'Logging level')
-                .choices(['error', 'warn', 'info', 'verbose', 'debug'])
-                .default('info')
-        )
-        .requiredOption('--useremail <email>', 'Email address that will be embedded in the JWT')
-        .requiredOption(
-            '--useremail-verified <name>',
-            'Claim indicating that the creator of thw JWT has verified that the email address belongs to the user.'
-        )
-        .requiredOption(
-            '--username <name>',
-            'User name (e.g. John Smith) that will be embedded in the JWT'
-        )
-        .option('--groups <groups...>', 'Groups associated with the user. ')
-        .requiredOption(
-            '--issuer <issuer>',
-            'JWT Issuer field. Must match the issuer in the Qlik Sense Cloud JWT IdP.'
-        )
-        .requiredOption(
-            '--keyid <id>',
-            'JWT key ID. Must match the Key ID in the Qlik Sense Cloud JWT IdP.'
-        )
-        .requiredOption(
-            '--expires <time>',
-            'Time during which the JWT will be valid. Examples: 60m (60 minutes), 48h (48 hours), 365d (365 days), 5y (5 years).'
-        )
-        .option(
-            '--cert-privatekey-file <file>',
-            'File containing private key of certificate that will be used to sign the JWT.'
-        )
-        .option(
-            '--cert-privatekey <privatekey>',
-            'Private key of certificate that will be used to sign the JWT.'
-        )
-        .addOption(
-            new Option('--cert-create [true|false]', 'Should a new certificate be created?')
-                .choices(['true', 'false'])
-                .default('false')
-        )
-        .option('--cert-file-prefix <prefix>', 'Prefix to place before certificate file names.', '')
-        .addOption(
-            new Option(
-                '--cert-create-expires-days <days>',
-                'Number of days the new certificate should be valid for'
-            ).argParser(parseInt)
-        )
-        .option(
-            '--minimal-output',
-            'Output only the JWT token, without any additional info. Useful with log level warn or error'
-        );
-
-    // -----------------------------
-    // decode
-    program
-        .command('decode')
-        .allowExcessArguments(false)
-        .description('Decode a JWT and display its header and payload. Optionally verify the signature.')
-        .action(handleDecode)
-        .addOption(
-            new Option('--loglevel <level>', 'Logging level')
-                .choices(['error', 'warn', 'info', 'verbose', 'debug'])
-                .default('info')
-        )
-        .option('--jwt <token>', 'JWT string to decode')
-        .option('--jwt-file <file>', 'File containing the JWT to decode')
-        .option(
-            '--cert-publickey-file <file>',
-            'File containing public key for signature verification'
-        )
-        .option('--cert-publickey <key>', 'Public key string for signature verification')
-        .option(
-            '--expected-audience <audience>',
-            'Expected audience value to verify (requires public key)'
-        )
-        .option(
-            '--minimal-output',
-            'Output as JSON only, without additional formatting'
-        );
+    setupCreateQseowCommand(program);
+    setupCreateQscloudCommand(program);
+    setupDecodeCommand(program);
 
     return program;
 };
@@ -227,7 +30,7 @@ const createProgram = () => {
 /**
  * Runs the CLI application.
  *
- * @param {string[]} [argv=process.argv] - Command line arguments.
+ * @param {string[]} [argv] - Command line arguments.
  * @returns {Promise<void>}
  */
 const run = async (argv = process.argv) => {
@@ -237,4 +40,4 @@ const run = async (argv = process.argv) => {
 
 run();
 
-export { createProgram, run, handleCreateQseow, handleCreateQscloud, handleDecode };
+export { createProgram, run };

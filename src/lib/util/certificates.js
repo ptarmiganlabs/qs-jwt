@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { promises as Fs } from 'node:fs';
 
-import { logger } from '../globals.js';
+import { logger } from '../../globals.js';
 
 /**
  * Checks whether a file exists at the given path.
