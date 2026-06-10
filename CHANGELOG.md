@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.14.0...qs-jwt-v1.14.1) (2026-06-10)
+
+
+### Refactoring
+
+* Make upload of built binaries more stable ([7b0ad77](https://github.com/ptarmiganlabs/qs-jwt/commit/7b0ad77e5bfb7202f5447d79d1506fbcd5cb9faf))
+* update CodeQL workflow and permissions in virus scan ([0d18d81](https://github.com/ptarmiganlabs/qs-jwt/commit/0d18d81a37b605ef3a8ff8ef3a9fb8ec407614cf))
+
 ## [1.14.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.13.0...qs-jwt-v1.14.0) (2026-06-10)
 
 
