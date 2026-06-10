@@ -47,11 +47,8 @@ const setupCreateQseowCommand = (program) => {
             '--userid <userid>',
             'user ID (e.g. johnsmith) that will be embedded in the JWT'
         )
-        .requiredOption(
-            '--username <name>',
-            'User name (e.g. John Smith) that will be embedded in the JWT'
-        )
-        .requiredOption('--useremail <email>', 'Email address that will be embedded in the JWT')
+.option('--username <name>', 'Optional user name (e.g. John Smith) to embed in the JWT')
+.option('--useremail <email>', 'Optional email address to embed in the JWT')
         .option('--groups <groups...>', 'Groups associated with the user dir/ID.')
         .requiredOption(
             '--expires <time>',

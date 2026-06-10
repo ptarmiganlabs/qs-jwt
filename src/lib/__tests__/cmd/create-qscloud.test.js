@@ -275,5 +275,20 @@ describe('cmd/create-qscloud', () => {
                 })
             );
         });
+
+        it('should omit email_verified when useremail is not provided', async () => {
+            const options = {
+                loglevel: 'info',
+                certCreate: 'false',
+                certPrivatekey: '-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----',
+                issuer: 'test-issuer',
+                keyid: 'test-key-id',
+                expires: '1h',
+            };
+
+            await jwtCreateQscloud(options);
+
+            expect(mockSign.mock.calls[0][0]).not.toHaveProperty('email_verified');
+        });
     });
 });
