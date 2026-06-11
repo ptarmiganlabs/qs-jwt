@@ -76,6 +76,11 @@ Compress-Archive @compress
 # Add THIRD-PARTY-NOTICES.md at the archive root.
 Compress-Archive -Path "./THIRD-PARTY-NOTICES.md" -Update -DestinationPath "./${env:DIST_FILE_NAME}-${env:RELEASE_VERSION}-win.zip"
 
+(Get-Content "./release-config/readme-template.txt") -replace '__VERSION__', $env:RELEASE_VERSION | Set-Content "./readme.txt"
+Compress-Archive -Path "./README.md" -Update -DestinationPath "./${env:DIST_FILE_NAME}-${env:RELEASE_VERSION}-win.zip"
+Compress-Archive -Path "./readme.txt" -Update -DestinationPath "./${env:DIST_FILE_NAME}-${env:RELEASE_VERSION}-win.zip"
+Compress-Archive -Path "./LICENSE" -Update -DestinationPath "./${env:DIST_FILE_NAME}-${env:RELEASE_VERSION}-win.zip"
+
 
 # -------------------
 # Clean up
