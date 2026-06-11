@@ -167,6 +167,11 @@ echo "Creating temp notarization archive for release build"
 zip -r "./${DIST_FILE_NAME}-${RELEASE_VERSION}-macos-arm64.zip" "./${DIST_FILE_NAME}" -x "*.DS_Store"
 zip -u "./${DIST_FILE_NAME}-${RELEASE_VERSION}-macos-arm64.zip" "./THIRD-PARTY-NOTICES.md" -x "*.DS_Store"
 
+sed "s/__VERSION__/${RELEASE_VERSION}/g" release-config/readme-template.txt > readme.txt
+zip -u "./${DIST_FILE_NAME}-${RELEASE_VERSION}-macos-arm64.zip" "./README.md" -x "*.DS_Store"
+zip -u "./${DIST_FILE_NAME}-${RELEASE_VERSION}-macos-arm64.zip" "./readme.txt" -x "*.DS_Store"
+zip -u "./${DIST_FILE_NAME}-${RELEASE_VERSION}-macos-arm64.zip" "./LICENSE" -x "*.DS_Store"
+
 # Here we send the notarization request to the Apple's Notarization service, waiting for the result.
 echo "Notarize release app"
 xcrun notarytool submit "./${DIST_FILE_NAME}-${RELEASE_VERSION}-macos-arm64.zip" --keychain-profile "notarytool-profile" --wait --keychain "${KEYCHAIN_PATH}"

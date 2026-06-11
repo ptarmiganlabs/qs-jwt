@@ -30,7 +30,7 @@ const createProgram = () => {
 /**
  * Runs the CLI application.
  *
- * @param {string[]} [argv=process.argv] - Command line arguments.
+ * @param {string[]} [argv] - Command line arguments.
  * @returns {Promise<void>}
  */
 const run = async (argv = process.argv) => {

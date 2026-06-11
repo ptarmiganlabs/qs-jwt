@@ -19,6 +19,11 @@ echo "Creating zip file"
 zip -9 -r ./${DIST_FILE_NAME}-${RELEASE_VERSION}-linux-x64.zip ${DIST_FILE_NAME}
 zip -9 -u ./${DIST_FILE_NAME}-${RELEASE_VERSION}-linux-x64.zip THIRD-PARTY-NOTICES.md
 
+sed "s/__VERSION__/${RELEASE_VERSION}/g" release-config/readme-template.txt > readme.txt
+zip -9 -u ./${DIST_FILE_NAME}-${RELEASE_VERSION}-linux-x64.zip README.md
+zip -9 -u ./${DIST_FILE_NAME}-${RELEASE_VERSION}-linux-x64.zip readme.txt
+zip -9 -u ./${DIST_FILE_NAME}-${RELEASE_VERSION}-linux-x64.zip LICENSE
+
 ls -la
 
 # Return to repository root. Build artifacts are kept here so the workflow's
