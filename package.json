@@ -7,6 +7,7 @@
     "scripts": {
         "build:docker": "docker build -t qs-jwt:latest .",
         "logo:generate:macos": "bash scripts/generate-logo-assets-macos.sh",
+        "logo:sync:social:macos": "bash scripts/generate-logo-assets-macos.sh docs/img/logo/qs-jwt-social-1200x630.svg docs/img/logo/final qs-jwt-social-1200x630 ../qs-jwt-docs/docs/public/img/logo",
         "qs-jwt": "node src/qs-jwt.js",
         "build:bundle": "esbuild src/qs-jwt.js --bundle --outfile=build.cjs --format=cjs --platform=node --target=node24 --inject:./src/lib/import-meta-url.js --define:import.meta.url=import_meta_url",
         "build:sea:prep": "node --experimental-sea-config src/sea-config.json",

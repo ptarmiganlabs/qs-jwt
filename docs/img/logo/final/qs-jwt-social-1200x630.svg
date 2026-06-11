@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">QS-JWT social share image</title>
+  <desc id="desc">A branded social card for QS-JWT with the product icon, name, and tagline.</desc>
+  <defs>
+    <linearGradient id="pageGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5FCFA"/>
+      <stop offset="100%" stop-color="#D8F2EB"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(970 140) rotate(90) scale(250 340)">
+      <stop offset="0%" stop-color="#B6EFE3" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#B6EFE3" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(210 520) rotate(90) scale(180 260)">
+      <stop offset="0%" stop-color="#C7F5EB" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#C7F5EB" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F3FCFA"/>
+      <stop offset="100%" stop-color="#D7F3ED"/>
+    </linearGradient>
+    <linearGradient id="docGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16A394"/>
+      <stop offset="100%" stop-color="#0B6A73"/>
+    </linearGradient>
+    <linearGradient id="sealGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2DD4BF"/>
+      <stop offset="100%" stop-color="#0F766E"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#0B6A73" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#pageGrad)"/>
+  <circle cx="970" cy="140" r="340" fill="url(#glowA)"/>
+  <circle cx="210" cy="520" r="260" fill="url(#glowB)"/>
+
+  <g filter="url(#shadow)" transform="translate(106 155) scale(2.3)">
+    <rect x="4" y="4" width="132" height="132" rx="16" ry="16" fill="url(#cardGrad)"/>
+
+    <rect x="34" y="31" width="46" height="56" rx="6" ry="6" fill="url(#docGrad)"/>
+    <polygon points="68,31 80,31 80,43" fill="#0A5B63" opacity="0.35"/>
+    <polygon points="68,31 80,43 68,43" fill="#D8FFF7"/>
+
+    <rect x="42" y="48" width="24" height="3.5" rx="1.75" fill="#FFFFFF" opacity="0.95"/>
+    <rect x="42" y="56" width="20" height="3.5" rx="1.75" fill="#FFFFFF" opacity="0.88"/>
+    <rect x="42" y="64" width="22" height="3.5" rx="1.75" fill="#FFFFFF" opacity="0.88"/>
+    <rect x="42" y="72" width="14" height="3.5" rx="1.75" fill="#FFFFFF" opacity="0.72"/>
+
+    <polygon points="78,90 83,103 87,96 85,88" fill="#0F766E"/>
+    <polygon points="87,88 89,96 95,103 95,90" fill="#14B8A6"/>
+    <circle cx="86" cy="76" r="20" fill="url(#sealGrad)"/>
+    <circle cx="86" cy="76" r="12.5" fill="#E9FFFA" opacity="0.95"/>
+
+    <path d="M86 66.5C82.4 66.5 79.5 69.4 79.5 73V75H82.5V73C82.5 71.1 84.1 69.5 86 69.5C87.9 69.5 89.5 71.1 89.5 73V75H92.5V73C92.5 69.4 89.6 66.5 86 66.5Z" fill="#0F766E"/>
+    <rect x="79" y="74.5" width="14" height="14" rx="3" fill="#0F766E"/>
+    <circle cx="86" cy="80.25" r="2.15" fill="#E9FFFA"/>
+    <rect x="85" y="81.5" width="2" height="4.5" rx="1" fill="#E9FFFA"/>
+  </g>
+
+  <g transform="translate(458 312)">
+    <text x="0" y="0" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="112" font-weight="800" fill="#0B6A73" letter-spacing="-2">QS-JWT</text>
+    <text x="0" y="82" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="600" fill="#147C74">Easily create Qlik Sense JWTs</text>
+  </g>
+</svg>

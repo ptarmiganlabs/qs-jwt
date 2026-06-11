@@ -5,15 +5,23 @@
 #   bash scripts/generate-logo-assets-macos.sh \
 #     [source-svg] \
 #     [output-root] \
-#     [asset-name]
+#     [asset-name] \
+#     [docs-public-logo-dir]
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_SVG="${1:-docs/img/logo/qs-jwt-logo-square.svg}"
 OUTPUT_ROOT="${2:-docs/img/logo/final}"
 ASSET_NAME="${3:-$(basename "$SOURCE_SVG" .svg)}"
+DOCS_PUBLIC_LOGO_DIR="${4:-}"
 MASTER_SIZE=2048
 PNG_SIZES=(16 32 48 64 96 128 180 192 256 384 512 1024)
+SOCIAL_ASSET_NAME="qs-jwt-social-1200x630"
+SOCIAL_WIDTH=1200
+SOCIAL_HEIGHT=630
+DEFAULT_DOCS_PUBLIC_LOGO_DIR="$REPO_ROOT/../qs-jwt-docs/docs/public/img/logo"
 
 require_tool() {
     local tool_name="$1"
@@ -98,6 +106,24 @@ generate_web_icon "$PNG_DIR/${ASSET_NAME}-180.png" "$WEB_DIR/apple-touch-icon.pn
 generate_web_icon "$PNG_DIR/${ASSET_NAME}-192.png" "$WEB_DIR/android-chrome-192x192.png" 192
 generate_web_icon "$PNG_DIR/${ASSET_NAME}-512.png" "$WEB_DIR/android-chrome-512x512.png" 512
 
+sync_social_card_to_docs() {
+    local target_dir="$1"
+
+    mkdir -p "$target_dir"
+    cp "$SOURCE_SVG" "$target_dir/${ASSET_NAME}.svg"
+    rsvg-convert -w "$SOCIAL_WIDTH" -h "$SOCIAL_HEIGHT" "$SOURCE_SVG" > "$target_dir/${ASSET_NAME}.png"
+}
+
+if [[ "$ASSET_NAME" == "$SOCIAL_ASSET_NAME" ]]; then
+    if [[ -z "$DOCS_PUBLIC_LOGO_DIR" && -d "$DEFAULT_DOCS_PUBLIC_LOGO_DIR" ]]; then
+        DOCS_PUBLIC_LOGO_DIR="$DEFAULT_DOCS_PUBLIC_LOGO_DIR"
+    fi
+
+    if [[ -n "$DOCS_PUBLIC_LOGO_DIR" ]]; then
+        sync_social_card_to_docs "$DOCS_PUBLIC_LOGO_DIR"
+    fi
+fi
+
 magick \
     "$WEB_DIR/favicon-16x16.png" \
     "$WEB_DIR/favicon-32x32.png" \
@@ -116,3 +142,8 @@ echo "- $WEB_DIR/favicon-48x48.png"
 echo "- $WEB_DIR/apple-touch-icon.png"
 echo "- $WEB_DIR/android-chrome-192x192.png"
 echo "- $WEB_DIR/android-chrome-512x512.png"
+
+if [[ "$ASSET_NAME" == "$SOCIAL_ASSET_NAME" && -n "$DOCS_PUBLIC_LOGO_DIR" ]]; then
+    echo "- $DOCS_PUBLIC_LOGO_DIR/${ASSET_NAME}.svg"
+    echo "- $DOCS_PUBLIC_LOGO_DIR/${ASSET_NAME}.png"
+fi
