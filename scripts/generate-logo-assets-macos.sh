@@ -43,6 +43,21 @@ fi
 OUTPUT_ROOT="${OUTPUT_ROOT%/}"
 PNG_DIR="$OUTPUT_ROOT/png"
 WEB_DIR="$OUTPUT_ROOT/web/$ASSET_NAME"
+VIEW_BOX="$(grep -o 'viewBox="[^"]*"' "$SOURCE_SVG" | head -n 1 | sed 's/viewBox="//; s/"//')"
+
+if [[ -z "$VIEW_BOX" ]]; then
+    echo "Could not determine viewBox from $SOURCE_SVG" >&2
+    exit 1
+fi
+
+read -r _ _ VIEW_WIDTH VIEW_HEIGHT <<<"$VIEW_BOX"
+
+if [[ -z "${VIEW_WIDTH:-}" || -z "${VIEW_HEIGHT:-}" ]]; then
+    echo "Could not parse viewBox dimensions from $SOURCE_SVG" >&2
+    exit 1
+fi
+
+IS_SQUARE="$(awk -v width="$VIEW_WIDTH" -v height="$VIEW_HEIGHT" 'BEGIN { print (width == height ? 1 : 0) }')"
 
 mkdir -p "$OUTPUT_ROOT" "$PNG_DIR" "$WEB_DIR"
 
@@ -55,24 +70,33 @@ cp "$SOURCE_SVG" "$OUTPUT_ROOT/$ASSET_NAME.svg"
 
 MASTER_PNG="$PNG_DIR/${ASSET_NAME}-${MASTER_SIZE}.png"
 
-rsvg-convert -w "$MASTER_SIZE" -h "$MASTER_SIZE" "$SOURCE_SVG" > "$MASTER_PNG"
+rsvg-convert -w "$MASTER_SIZE" "$SOURCE_SVG" > "$MASTER_PNG"
 
 for size in "${PNG_SIZES[@]}"; do
     output_file="$PNG_DIR/${ASSET_NAME}-${size}.png"
 
-    if [[ "$size" -eq "$MASTER_SIZE" ]]; then
-        continue
-    fi
-
-    sips -z "$size" "$size" "$MASTER_PNG" --out "$output_file" >/dev/null
+    sips -Z "$size" "$MASTER_PNG" --out "$output_file" >/dev/null
 done
 
-cp "$PNG_DIR/${ASSET_NAME}-16.png" "$WEB_DIR/favicon-16x16.png"
-cp "$PNG_DIR/${ASSET_NAME}-32.png" "$WEB_DIR/favicon-32x32.png"
-cp "$PNG_DIR/${ASSET_NAME}-48.png" "$WEB_DIR/favicon-48x48.png"
-cp "$PNG_DIR/${ASSET_NAME}-180.png" "$WEB_DIR/apple-touch-icon.png"
-cp "$PNG_DIR/${ASSET_NAME}-192.png" "$WEB_DIR/android-chrome-192x192.png"
-cp "$PNG_DIR/${ASSET_NAME}-512.png" "$WEB_DIR/android-chrome-512x512.png"
+generate_web_icon() {
+    local source_file="$1"
+    local output_file="$2"
+    local canvas_size="$3"
+
+    if [[ "$IS_SQUARE" == "1" ]]; then
+        cp "$source_file" "$output_file"
+        return
+    fi
+
+    magick "$source_file" -background none -gravity center -extent "${canvas_size}x${canvas_size}" "$output_file"
+}
+
+generate_web_icon "$PNG_DIR/${ASSET_NAME}-16.png" "$WEB_DIR/favicon-16x16.png" 16
+generate_web_icon "$PNG_DIR/${ASSET_NAME}-32.png" "$WEB_DIR/favicon-32x32.png" 32
+generate_web_icon "$PNG_DIR/${ASSET_NAME}-48.png" "$WEB_DIR/favicon-48x48.png" 48
+generate_web_icon "$PNG_DIR/${ASSET_NAME}-180.png" "$WEB_DIR/apple-touch-icon.png" 180
+generate_web_icon "$PNG_DIR/${ASSET_NAME}-192.png" "$WEB_DIR/android-chrome-192x192.png" 192
+generate_web_icon "$PNG_DIR/${ASSET_NAME}-512.png" "$WEB_DIR/android-chrome-512x512.png" 512
 
 magick \
     "$WEB_DIR/favicon-16x16.png" \
