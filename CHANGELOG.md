@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.15.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.14.1...qs-jwt-v1.15.0) (2026-06-12)
+
+
+### Features
+
+* Add new lqs-jwt ogo ([e077d15](https://github.com/ptarmiganlabs/qs-jwt/commit/e077d15bbaca46953d6b58d8944c1df9c36f3e77))
+
+
+### Bug Fixes
+
+* Add info files to release ZIP file ([1994810](https://github.com/ptarmiganlabs/qs-jwt/commit/19948106767f6701fbd7c1da86bf9ec26899ac5e))
+* Incorrect aspect ratio for logo images are not history ([eda95f5](https://github.com/ptarmiganlabs/qs-jwt/commit/eda95f565f2f259567af941432c10e12dd781f5c))
+
+
+### Miscellaneous
+
+* **main:** release qs-jwt 1.14.1 ([3c03393](https://github.com/ptarmiganlabs/qs-jwt/commit/3c033932ecf23898b364113d41c6c75d7101bd6b))
+* **main:** release qs-jwt 1.14.1 ([d153782](https://github.com/ptarmiganlabs/qs-jwt/commit/d153782b59bbaaa625b47531e388892ba3ec4f97))
+* **main:** release qs-jwt 1.14.1 ([0601968](https://github.com/ptarmiganlabs/qs-jwt/commit/0601968d5aa366e8d1a0e2b0501372c21b7dd41a))
+* **main:** release qs-jwt 1.14.1 ([5d60b47](https://github.com/ptarmiganlabs/qs-jwt/commit/5d60b4796c65f2a84ee36b61fab0d9d279cd059b))
+* **main:** release qs-jwt 1.14.1 ([46664fe](https://github.com/ptarmiganlabs/qs-jwt/commit/46664fef4cd7d51805e06a4cdd5146b73569236a))
+* **main:** release qs-jwt 1.14.1 ([77a1b94](https://github.com/ptarmiganlabs/qs-jwt/commit/77a1b9404f89a6ff9eed9fafa28d8c56aed07da5))
+* **main:** release qs-jwt 1.14.1 ([d39cbf5](https://github.com/ptarmiganlabs/qs-jwt/commit/d39cbf5a19f50b8dfc848a2dc24aa34736644990))
+* **main:** release qs-jwt 1.14.1 ([459bca8](https://github.com/ptarmiganlabs/qs-jwt/commit/459bca8bc2e08814d3dc633335bf09a730fdfa97))
+* **main:** release qs-jwt 1.14.1 ([78e8df0](https://github.com/ptarmiganlabs/qs-jwt/commit/78e8df0e37a77a3d932fff12f467147c89e4c725))
+* **main:** release qs-jwt 1.14.1 ([80b79ef](https://github.com/ptarmiganlabs/qs-jwt/commit/80b79ef9692addbe8e5a6a5cefc2dbf520f96f17))
+
 ## [1.14.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.14.1...qs-jwt-v1.14.1) (2026-06-10)
 
 
