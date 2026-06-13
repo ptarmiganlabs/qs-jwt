@@ -52,7 +52,7 @@
     },
     "homepage": "https://github.com/ptarmiganlabs/qs-jwt#readme",
     "dependencies": {
-        "commander": "^12.1.0",
+        "commander": "^15.0.0",
         "jsonwebtoken": "^9.0.3",
         "node-forge": "^1.4.0",
         "uid-safe": "^2.1.5",
