@@ -41,7 +41,7 @@ Nothing about how qs-jwt works has changed. This affects only how Windows identi
 
 **Do not allow it by certificate thumbprint.** Azure Artifact Signing issues short-lived certificates, valid for about three days and renewed automatically, so the thumbprint is different from one release to the next. A rule pinned to one thumbprint matches one release.
 
-**Do not build the rule on the issuing CA either.** The certificate is issued by one of several numbered Microsoft CAs (see the table below), and a later release may be issued by another. Match on the publisher, Ptarmigan Labs AB, which stays the same. An AppLocker publisher rule matches on the publisher name. A Windows Defender Application Control rule at the Publisher level pairs the publisher with the CA one step below Microsoft's root, Microsoft ID Verified Code Signing PCA 2021, which also stays the same.
+**Do not build the rule on the issuing CA either.** The certificate is issued by one of several Microsoft CAs (see the table below), and signings on the same day have already come from two different ones. Match on the publisher, Ptarmigan Labs AB, which stays the same. An AppLocker publisher rule matches on the publisher name. A Windows Defender Application Control rule at the Publisher level pairs the publisher with the CA one step below Microsoft's root, Microsoft ID Verified Code Signing PCA 2021, which also stays the same.
 
 The signature stays valid after the certificate behind it expires. Every release is timestamped when it is signed, and Windows checks the certificate against that moment, not against today.
 
@@ -60,13 +60,13 @@ You can also right-click the file, choose **Properties**, and look at the **Digi
 
 `Status` should read `Valid`, and the subject should name **Ptarmigan Labs AB**. `Valid` alone only means some trusted certificate signed the file; the publisher name is what says it was us.
 
-|                       |                                                                                                                        |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Issued to (publisher) | `Ptarmigan Labs AB`                                                                                                    |
-| Issued by             | `Microsoft ID Verified CS AOC CA 03`. One of several numbered issuing CAs, so a release may show another number        |
-| Above that            | `Microsoft ID Verified Code Signing PCA 2021`, under `Microsoft Identity Verification Root Certificate Authority 2020` |
-| Timestamped by        | `Microsoft Public RSA Time Stamping Authority`                                                                         |
-| Certificate lifetime  | About three days. A new certificate, and a new thumbprint, for each release                                            |
+|                       |                                                                                                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Issued to (publisher) | `Ptarmigan Labs AB`                                                                                                                                                                  |
+| Issued by             | One of Microsoft's ID Verified issuing CAs. Signings so far: `Microsoft ID Verified CS AOC CA 03` and `Microsoft ID Verified CS EOC CA 03`, so a release may show either, or another |
+| Above that            | `Microsoft ID Verified Code Signing PCA 2021`, under `Microsoft Identity Verification Root Certificate Authority 2020`                                                               |
+| Timestamped by        | `Microsoft Public RSA Time Stamping Authority`                                                                                                                                       |
+| Certificate lifetime  | About three days. A new certificate, and a new thumbprint, for each release                                                                                                          |
 
 `NotAfter` will usually be a date close to the release, and may well be in the past by the time you check. That is expected, and `Status` still reads `Valid`, because of the timestamp.
 
