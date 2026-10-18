@@ -85,9 +85,12 @@ jobs:
             DIST_FILE_NAME: qs-jwt
 
         steps:
-            - name: Checkout repository
+            # The released commit, not github.sha: see build-win64. The SBOM describes the
+            # dependencies of what was released.
+            - name: Checkout the released commit
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
               with:
+                  ref: ${{ needs.release-please.outputs.release_sha }}
                   persist-credentials: false
 
             - name: Setup Node.js
@@ -508,15 +511,30 @@ jobs:
             #     echo "version    : ${{ needs.release-please.outputs.release_version }}"
             #     echo "upload_url : ${{ needs.release-please.outputs.release_upload_url }}"
 
-            - name: Checkout repository
+            # The released commit, not github.sha: see build-win64. The binary embeds package.json,
+            # so building another commit would ship a binary reporting another version.
+            - name: Checkout the released commit
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
               with:
+                  ref: ${{ needs.release-please.outputs.release_sha }}
                   persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
               with:
                   node-version: 24
+
+            - name: Verify the checkout is the version being released
+              env:
+                  RELEASE_VERSION: ${{ needs.release-please.outputs.release_version }}
+              run: |
+                  actual=$(node -p "require('./package.json').version")
+                  echo "release-please : $RELEASE_VERSION"
+                  echo "package.json   : $actual"
+                  if [ "$actual" != "$RELEASE_VERSION" ]; then
+                    echo "::error::Refusing to build: package.json says $actual, but the release is $RELEASE_VERSION."
+                    exit 1
+                  fi
 
             - name: Install dependencies (including build tooling)
               run: |
