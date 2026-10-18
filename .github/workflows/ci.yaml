@@ -1,12 +1,27 @@
 name: ci
 on:
     workflow_dispatch:
+        inputs:
+            # Builds the dispatched commit for Windows, signs it through Azure Artifact Signing and
+            # verifies the signature, then stops: nothing is released, and the signed binary is kept
+            # as a workflow artifact for three days. The only way to prove the signing before a release
+            # depends on it. Dispatch it on main; the release-signing environment admits no other
+            # branch:
+            #
+            #   gh workflow run ci.yaml -R ptarmiganlabs/qs-jwt --ref main -f rehearse_signing=true
+            rehearse_signing:
+                description: Build and sign the Windows binary, and release nothing
+                type: boolean
+                default: false
     push:
         branches:
             - main
 permissions: {}
 jobs:
     release-please:
+        # A signing rehearsal must not cut a release on the way, should a merged release pull request
+        # be waiting for one.
+        if: ${{ !inputs.rehearse_signing }}
         permissions: {}
         runs-on: ubuntu-latest
         outputs:
@@ -14,6 +29,9 @@ jobs:
             release_tag_name: ${{ steps.release.outputs['tag_name'] }}
             release_version: ${{ steps.release.outputs['version'] }}
             release_upload_url: ${{ steps.release.outputs['upload_url'] }}
+            # The commit release-please released. Not necessarily the commit that started this run:
+            # release-please releases main's HEAD, a different commit whenever another push started it.
+            release_sha: ${{ steps.release.outputs['sha'] }}
         env:
             GITHUB_REF: ${{ github.ref }}
             GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -176,82 +194,270 @@ jobs:
                   rm -f "./${DIST_FILE_NAME}"
                   rm -f "./${DIST_FILE_NAME}-${{ needs.release-please.outputs.release_version }}-macos-arm64.zip"
 
-    release-win64:
-        permissions:
-            contents: write
+    # ---------------------------------------------------------------------------------------------
+    # Windows, in three jobs, so that no job both runs repository code and holds the signing
+    # credential (plabs-house-rules, rules/ci/public-repositories.md):
+    #
+    #   build-win64    repository code and npm, no credential   -> unsigned qs-jwt.exe
+    #   sign-win64     the Azure credential, no repository code -> signed qs-jwt.exe
+    #   publish-win64  neither                                  -> zip attached to the release
+    #
+    # All three run on GitHub-hosted runners: qs-jwt is public, and the organisation's self-hosted
+    # runner groups do not admit public repositories, so the win-code-sign runner this used to ask
+    # for never started. No certificate is stored anywhere: sign-win64 signs through Azure,
+    # authenticated by GitHub's OIDC token. Butler SOS, Butler Sheet Icons and Ctrl-Q sign the same
+    # way.
+    #
+    # A rehearsal (rehearse_signing, above) builds the dispatched commit, signs it, verifies the
+    # signature and stops. publish-win64 never runs in one, and the signed binary is kept as a
+    # workflow artifact for three days.
+    build-win64:
         needs: release-please
-        runs-on:
-            - self-hosted
-            - x64
-            - windows
-            - sp53
-            - win-code-sign
-        # timeout-minutes: 15
-        if: needs.release-please.outputs.releases_created == 'true'
-        env:
-            DIST_FILE_NAME: qs-jwt
-            GITHUB_TOKEN: ${{ secrets.PAT }}
-            # CODESIGN_PWD: ${{ secrets.WIN_CODESIGN_PWD}}
-            # CODESIGN_INTERMEDIATE_BASE64: ${{ secrets.WIN_CODESIGN_INTERMEDIATE_BASE64 }}
-            # CODESIGN_BASE64: ${{ secrets.WIN_CODESIGN_BASE64}}
-            CODESIGN_WIN_THUMBPRINT: ${{ secrets.WIN_CODESIGN_THUMBPRINT}}
+        # !cancelled() in place of the implicit success(): a rehearsal skips release-please, and a
+        # skipped dependency would otherwise skip this job too. A release still needs
+        # releases_created, which a failed or skipped release-please never sets.
+        if: >-
+            !cancelled()
+            && (needs.release-please.outputs.releases_created == 'true'
+                || (github.event_name == 'workflow_dispatch' && inputs.rehearse_signing))
+        runs-on: windows-latest
+        timeout-minutes: 30
+        permissions:
+            contents: read # checkout only
         steps:
-            # Keep for reference - example of how to show individual outputs
-            # - name: Release tag and upload url from previous job (debug)
-            #   if: false
-            #   run: |
-            #     Write-Output 'tag_name        : ${{ needs.release-please.outputs.release_tag_name }}'
-            #     Write-Output 'version         : ${{ needs.release-please.outputs.release_version }}'
-            #     Write-Output 'upload_url      : ${{ needs.release-please.outputs.release_upload_url }}'
-
-            - name: Checkout repository
+            # A release builds the released commit, never github.sha: release-please releases main's
+            # HEAD, a different commit whenever another push started this run. A rehearsal has no
+            # release, so it builds the commit it was dispatched on.
+            - name: Checkout the commit being built
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
               with:
+                  ref: ${{ needs.release-please.outputs.releases_created == 'true' && needs.release-please.outputs.release_sha || github.sha }}
                   persist-credentials: false
 
+            # No npm cache: what this job builds gets signed, so it starts from nothing an earlier run
+            # left behind.
             - name: Setup Node.js
               uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
               with:
                   node-version: 24
 
-            - name: Install dependencies (including build tooling)
-              run: |
-                  npm ci
-
-            - name: Install GitHub CLI
-              id: install-gh
-              shell: powershell
-              run: |
-                  $ghVersion = "2.67.0"
-                  $zipFile = "gh_${ghVersion}_windows_amd64.zip"
-                  Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v$ghVersion/$zipFile" -OutFile $zipFile
-                  $extractPath = Join-Path $env:RUNNER_TEMP "gh-cli"
-                  Expand-Archive $zipFile -DestinationPath $extractPath -Force
-                  $ghExePath = Get-ChildItem -Path $extractPath -Recurse -Filter "gh.exe" | Select-Object -First 1 -ExpandProperty FullName
-                  if (-not $ghExePath) {
-                      throw "gh.exe not found after extraction"
-                  }
-                  echo "gh-path=$ghExePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-
-            - name: Build binaries
+            - name: Verify the checkout is the version being released
+              if: needs.release-please.outputs.releases_created == 'true'
+              shell: pwsh
               env:
                   RELEASE_VERSION: ${{ needs.release-please.outputs.release_version }}
-              run: ./scripts/release-win.ps1
+              run: |
+                  $actual = node -p "require('./package.json').version"
+                  Write-Host "release-please : $env:RELEASE_VERSION"
+                  Write-Host "package.json   : $actual"
+                  if ($actual -ne $env:RELEASE_VERSION) {
+                    throw "Refusing to build: package.json says $actual, but the release is $env:RELEASE_VERSION."
+                  }
 
-            - name: Upload to existing release
+            # --ignore-scripts: no dependency's install script runs where the binary that gets signed
+            # is built. esbuild and postject both work without theirs.
+            - name: Install dependencies
+              run: npm ci --ignore-scripts
+
+            # scripts/release-win.ps1 builds, smoke-tests and checks the binary carries no signature,
+            # records the digest sign-win64 checks against, and stages the other files the zip holds.
+            - name: Build the unsigned binary
+              shell: pwsh
+              run: |
+                  ./scripts/release-win.ps1
+                  $hash = Get-Content -LiteralPath ./qs-jwt.exe.sha256
+                  Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value "Unsigned Windows binary SHA256: ``$hash``"
+
+            # 30 days asked for a release, which is as long as GitHub lets a job be re-run: a failed
+            # sign-win64 or publish-win64 is recovered with "Re-run failed jobs", which needs these
+            # artifacts still to exist. The repository's retention setting caps what is asked for (3
+            # days on 2026-10-18; upload-artifact warns and uses the cap), and past it the fix ships
+            # in the next release. A rehearsal needs three days.
+            - name: Upload the unsigned binary
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: win64-unsigned
+                  path: |
+                      qs-jwt.exe
+                      qs-jwt.exe.sha256
+                  retention-days: ${{ inputs.rehearse_signing && 3 || 30 }}
+                  if-no-files-found: error
+
+            # Only publish-win64 needs these; sign-win64 never sees them.
+            - name: Upload the files the zip carries beside the binary
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: win64-zip-extras
+                  path: win64-zip-extras/
+                  retention-days: ${{ inputs.rehearse_signing && 3 || 30 }}
+                  if-no-files-found: error
+
+    sign-win64:
+        needs: build-win64
+        # Explicit, because the implicit success() fails when anything further up the chain was
+        # skipped, and a rehearsal skips release-please. Without this, signing would be skipped while
+        # the run still went green.
+        if: ${{ !cancelled() && needs.build-win64.result == 'success' }}
+        # INVARIANT: no actions/checkout, no npm and no ./scripts in this job. A compromised dependency
+        # must not be able to reach the Azure OIDC token. A step that needs repository content belongs
+        # in build-win64 or publish-win64.
+        runs-on: windows-latest
+        timeout-minutes: 15
+        # This is what binds the OIDC token's subject, and the signing app's federated credential in
+        # Entra must match the subject exactly. With GitHub's immutable subject switched on for the
+        # repository, as in every Ptarmigan Labs repository that signs through Azure, it is:
+        #
+        #   repo:ptarmiganlabs@6304190/qs-jwt@467577124:environment:release-signing
+        #
+        # Renaming this environment or the repository, or transferring the repository, breaks signing
+        # with AADSTS700213, "no matching federated identity record found". Regenerate the prefix rather
+        # than retyping it, then append ":environment:release-signing":
+        #
+        #   gh api repos/ptarmiganlabs/qs-jwt/actions/oidc/customization/sub --jq .sub_claim_prefix
+        environment: release-signing
+        permissions:
+            id-token: write # the OIDC token azure/login exchanges for the signing credential
+            contents: read # nothing is checked out; downloading this run's artifact needs no more
+        outputs:
+            # The SHA-256 of the binary the verify step found signed by Ptarmigan Labs AB.
+            # publish-win64 checks the binary in the zip it attaches against this.
+            signed_sha256: ${{ steps.verify.outputs.sha256 }}
+        steps:
+            - name: Download the unsigned binary
+              uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+              with:
+                  name: win64-unsigned
+                  path: to-sign
+
+            # GitHub already protects artifacts, so this cannot currently fail. It states what the job
+            # assumes, and would catch a later change that rebuilds or re-uploads between build and sign.
+            - name: Verify the artifact is what build-win64 produced
+              shell: pwsh
+              run: |
+                  $expected = (Get-Content to-sign/qs-jwt.exe.sha256 -Raw).Trim()
+                  $actual = (Get-FileHash to-sign/qs-jwt.exe -Algorithm SHA256).Hash
+                  Write-Host "built  : $expected"
+                  Write-Host "to sign: $actual"
+                  if ($actual -ne $expected) {
+                    throw "Refusing to sign: the artifact does not match the digest build-win64 recorded."
+                  }
+                  Remove-Item to-sign/qs-jwt.exe.sha256
+
+            - name: Azure login via OIDC
+              uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
+              with:
+                  client-id: ${{ vars.AZURE_CLIENT_ID }}
+                  tenant-id: ${{ vars.AZURE_TENANT_ID }}
+                  subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+            - name: Sign with Azure Artifact Signing
+              uses: azure/artifact-signing-action@c7ab2a863ab5f9a846ddb8265964877ef296ee82 # v2.0.0
+              with:
+                  endpoint: ${{ vars.SIGNING_ENDPOINT }}
+                  signing-account-name: ${{ vars.SIGNING_ACCOUNT_NAME }}
+                  certificate-profile-name: ${{ vars.SIGNING_CERT_PROFILE_NAME }}
+                  files-folder: ${{ github.workspace }}\to-sign
+                  files-folder-filter: exe
+                  file-digest: SHA256
+                  timestamp-rfc3161: http://timestamp.acs.microsoft.com
+                  timestamp-digest: SHA256
+
+            # A hard failure, deliberately: if signing fails, the release goes out without a Windows
+            # binary rather than with an unsigned one. Two readings of the same signature (signtool's
+            # chain and timestamp check, and the one Windows itself makes), plus a check that the
+            # signer is Ptarmigan Labs AB, so that a misconfigured certificate profile cannot sign as
+            # anyone else. The binary's hash, taken once all of that has held, becomes the job's output.
+            - name: Verify the signature
+              id: verify
+              shell: pwsh
+              run: |
+                  $st = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" |
+                        Sort-Object FullName -Descending | Select-Object -First 1
+                  if (-not $st) { throw "signtool.exe not found on this runner." }
+                  & $st.FullName verify /pa /v to-sign\qs-jwt.exe
+                  if ($LASTEXITCODE -ne 0) { throw "Signature verification failed." }
+                  $sig = Get-AuthenticodeSignature -LiteralPath to-sign\qs-jwt.exe
+                  if ($sig.Status -ne 'Valid') { throw "Windows reads the signature as $($sig.Status): $($sig.StatusMessage)" }
+                  # The certificate's own parsed common name, compared exactly and case-sensitively,
+                  # not a pattern over the subject string.
+                  $signer = $sig.SignerCertificate.GetNameInfo([System.Security.Cryptography.X509Certificates.X509NameType]::SimpleName, $false)
+                  if ($signer -cne 'Ptarmigan Labs AB') {
+                    throw "Signed by an unexpected certificate: '$signer' ($($sig.SignerCertificate.Subject))"
+                  }
+                  $hash = (Get-FileHash -LiteralPath to-sign\qs-jwt.exe -Algorithm SHA256).Hash
+                  Add-Content -LiteralPath $env:GITHUB_OUTPUT -Value "sha256=$hash"
+                  Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value @(
+                    "Signed by: ``$($sig.SignerCertificate.Subject)``",
+                    "Timestamped by: ``$($sig.TimeStamperCertificate.Subject)``",
+                    "Signed Windows binary SHA256: ``$hash``"
+                  )
+
+            - name: Upload the signed binary
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: win64-signed
+                  path: to-sign/qs-jwt.exe
+                  # See the uploads in build-win64.
+                  retention-days: ${{ inputs.rehearse_signing && 3 || 30 }}
+                  if-no-files-found: error
+
+    publish-win64:
+        needs: [release-please, build-win64, sign-win64]
+        # Never on a rehearsal, which has no release to attach to. Written out in full for the reason
+        # on sign-win64.
+        if: >-
+            !cancelled()
+            && needs.release-please.outputs.releases_created == 'true'
+            && needs.sign-win64.result == 'success'
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        permissions:
+            contents: write # attaches the zip to the release
+        steps:
+            - name: Download the signed binary
+              uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+              with:
+                  name: win64-signed
+                  path: package
+
+            - name: Download the files the zip carries beside the binary
+              uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+              with:
+                  name: win64-zip-extras
+                  path: package
+
+            # The same zip as before signing moved here: qs-jwt.exe with the licence, the third-party
+            # notices, the README and readme.txt, all at the root. And the qs-jwt.exe in it is the one
+            # sign-win64 found signed, byte for byte, read back out of the finished zip, so that
+            # nothing between the two jobs can swap it.
+            - name: Zip it, and check it holds the binary sign-win64 verified
+              env:
+                  ZIP_NAME: qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip
+                  SIGNED_SHA256: ${{ needs.sign-win64.outputs.signed_sha256 }}
+              run: |
+                  set -euo pipefail
+                  if [ -z "$SIGNED_SHA256" ]; then echo "::error::sign-win64 recorded no hash of the binary it verified. Refusing to publish."; exit 1; fi
+                  cd package
+                  for f in qs-jwt.exe LICENSE README.md THIRD-PARTY-NOTICES.md readme.txt; do
+                    test -f "$f" || { echo "::error::$f is missing from what build-win64 and sign-win64 produced"; exit 1; }
+                  done
+                  zip -9 "../$ZIP_NAME" qs-jwt.exe LICENSE README.md THIRD-PARTY-NOTICES.md readme.txt
+                  cd ..
+                  unzip -l "$ZIP_NAME"
+                  signed=$(printf '%s' "$SIGNED_SHA256" | tr 'A-F' 'a-f')
+                  zipped=$(unzip -p "$ZIP_NAME" qs-jwt.exe | sha256sum | cut -d' ' -f1)
+                  if [ "$zipped" != "$signed" ]; then
+                    echo "::error::The qs-jwt.exe in $ZIP_NAME is not the binary sign-win64 verified ($SIGNED_SHA256 signed, $zipped zipped). Refusing to publish."
+                    exit 1
+                  fi
+                  echo "The qs-jwt.exe in $ZIP_NAME is the one sign-win64 verified: $zipped"
+
+            - name: Attach to the release
               env:
                   GH_TOKEN: ${{ github.token }}
-              shell: powershell
-              run: |
-                  & "${{ steps.install-gh.outputs.gh-path }}" release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip --clobber
-
-            - name: Tidy up before exiting
-              run: |
-                  dir
-                  Remove-Item -Force build.cjs
-                  Remove-Item -Force sea-prep.blob
-                  Remove-Item -Force "./${env:DIST_FILE_NAME}.exe"
-                  Remove-Item -Force "./${env:DIST_FILE_NAME}-${{ needs.release-please.outputs.release_version }}-win.zip"
+                  TAG: ${{ needs.release-please.outputs.release_tag_name }}
+                  ZIP_NAME: qs-jwt-${{ needs.release-please.outputs.release_version }}-win.zip
+              run: gh release upload "$TAG" "./$ZIP_NAME" --clobber --repo "$GITHUB_REPOSITORY"
 
     release-linux:
         permissions:
