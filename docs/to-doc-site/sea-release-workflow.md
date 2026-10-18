@@ -52,10 +52,10 @@ Release builds produce versioned zip files (e.g., `qs-jwt-1.12.0-linux-x64.zip`)
 The SEA build keeps the existing release hardening in place:
 
 - macOS binaries are code signed and notarized.
-- Windows binaries have Authenticode signing code available in the scripts (currently disabled, matching Butler SOS).
+- Windows binaries are code signed with Azure Artifact Signing, so Windows shows the publisher as Ptarmigan Labs AB. Earlier Windows downloads were not signed.
 - Linux release artifacts are zipped and scanned by the existing VirusTotal workflow.
 
-In addition, the SEA build removes any pre-existing signature from the copied Node.js executable before injecting the application payload. macOS binaries are then re-signed and notarized (and Windows binaries are re-signed only when signing is enabled).
+In addition, the SEA build removes any pre-existing signature from the copied Node.js executable before injecting the application payload. macOS and Windows binaries are then signed again, the macOS one also notarized.
 
 ## SBOM
 
@@ -103,12 +103,12 @@ On macOS, `postject` also needs `--macho-segment-name NODE_SEA`.
 
 ## CI workflow structure
 
-The CI workflow has the following jobs (all run only when release-please creates a release):
+The CI workflow has the following jobs, all on GitHub-hosted runners. The build jobs run only when release-please creates a release, or in a signing rehearsal:
 
 1. **release-please** — Creates the GitHub release
 2. **sbom-build** — Generates and uploads the SBOM
 3. **release-macos-arm64** — Builds, signs, notarizes, and uploads the macOS binary
-4. **release-win64** — Builds and uploads the Windows binary
+4. **build-win64**, **sign-win64**, **publish-win64** — Build the Windows binary unsigned, sign it with Azure Artifact Signing in a job that runs none of the repository's code, then zip and upload it
 5. **release-linux** — Builds and uploads the Linux binary
 
-Each release job follows the same pattern: checkout, setup Node, install esbuild, install dependencies, run the release script, upload the zip to the release, and clean up.
+Every build job checks out the commit release-please released, and refuses to build if its `package.json` is not the version being released.
