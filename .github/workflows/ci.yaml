@@ -2,15 +2,15 @@ name: ci
 on:
     workflow_dispatch:
         inputs:
-            # Builds the dispatched commit for Windows, signs it through Azure Artifact Signing and
-            # verifies the signature, then stops: nothing is released, and the signed binary is kept
-            # as a workflow artifact for three days. The only way to prove the signing before a release
-            # depends on it. Dispatch it on main; the release-signing environment admits no other
-            # branch:
+            # Builds the dispatched commit for macOS and Windows and signs both, notarizing the macOS
+            # one and signing the Windows one through Azure Artifact Signing, then stops: nothing is
+            # released, and the signed builds are kept as workflow artifacts for three days. The only
+            # way to prove the signing on hosted runners before a release depends on it. Dispatch it
+            # on main; the release-signing environment admits no other branch:
             #
             #   gh workflow run ci.yaml -R ptarmiganlabs/qs-jwt --ref main -f rehearse_signing=true
             rehearse_signing:
-                description: Build and sign the Windows binary, and release nothing
+                description: Build and sign the macOS and Windows binaries, and release nothing
                 type: boolean
                 default: false
     push:
@@ -129,38 +129,37 @@ jobs:
                   path: './build/'
                   retention-days: 3
 
+    # On a GitHub-hosted runner: qs-jwt is public, and the organisation's self-hosted runner groups do
+    # not admit public repositories, so a job asking for mac-build2 never starts (plabs-house-rules,
+    # rules/ci/public-repositories.md). Each run gets a fresh VM, so nothing the signing leaves behind
+    # outlives the job, and two runs can no longer collide on one Mac's keychain.
     release-macos-arm64:
-        permissions:
-            contents: write
         needs: release-please
-        runs-on: mac-build2
-        concurrency:
-            group: qs-jwt-macos-signing-mac-build2
-            cancel-in-progress: false
-        # timeout-minutes: 15
-
-        if: needs.release-please.outputs.releases_created == 'true'
+        # As build-win64: a release, or a rehearsal, which skips release-please.
+        if: >-
+            !cancelled()
+            && (needs.release-please.outputs.releases_created == 'true'
+                || (github.event_name == 'workflow_dispatch' && inputs.rehearse_signing))
+        # Pinned rather than macos-latest because the binary must be arm64.
+        runs-on: macos-15
+        # For its deployment policy, which admits main and nothing else, so that only merged code
+        # signs with the production identity. The Apple secrets are organisation secrets, which an
+        # environment does not scope.
+        environment: release-signing
+        # Notarisation waits on Apple's service, whose latency is not ours to predict.
+        timeout-minutes: 30
+        permissions:
+            contents: write # attaches the zip to the release
         env:
             DIST_FILE_NAME: qs-jwt
-            GITHUB_TOKEN: ${{ secrets.PAT }}
-            MACOS_CERTIFICATE: ${{ secrets.PROD_MACOS_CERTIFICATE_BASE64_CODESIGN }}
-            MACOS_CERTIFICATE_PWD: ${{ secrets.PROD_MACOS_CERTIFICATE_CODESIGN_PWD }}
-            MACOS_CERTIFICATE_NAME: ${{ secrets.PROD_MACOS_CERTIFICATE_CODESIGN_NAME }}
-            MACOS_CI_KEYCHAIN_PWD: ${{ secrets.PROD_MACOS_CI_KEYCHAIN_PWD }}
-            PROD_MACOS_NOTARIZATION_APPLE_ID: ${{ secrets.PROD_MACOS_NOTARIZATION_APPLE_ID }}
-            PROD_MACOS_NOTARIZATION_TEAM_ID: ${{ secrets.PROD_MACOS_NOTARIZATION_TEAM_ID }}
-            PROD_MACOS_NOTARIZATION_PWD: ${{ secrets.PROD_MACOS_NOTARIZATION_PWD }}
+        # The Apple secrets are on the step that signs, not on the job, so that setup-node, npm ci and
+        # its dependencies' install scripts never see them.
         steps:
-            - name: Release tag and upload url from previous job (debug)
-              if: false
-              run: |
-                  echo "tag_name   : ${{ needs.release-please.outputs.release_tag_name }}"
-                  echo "version    : ${{ needs.release-please.outputs.release_version }}"
-                  echo "upload_url : ${{ needs.release-please.outputs.release_upload_url }}"
-
-            - name: Checkout repository
+            # A release builds the released commit, never github.sha; see build-win64.
+            - name: Checkout the commit being built
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
               with:
+                  ref: ${{ needs.release-please.outputs.releases_created == 'true' && needs.release-please.outputs.release_sha || github.sha }}
                   persist-credentials: false
 
             - name: Setup Node.js
@@ -168,31 +167,61 @@ jobs:
               with:
                   node-version: 24
 
-            - name: Install dependencies (including build tooling)
-              run: |
-                  npm ci
-
-            - name: Install GitHub CLI
-              run: brew install gh
-
-            - name: Build binaries
+            - name: Verify the checkout is the version being released
+              if: needs.release-please.outputs.releases_created == 'true'
               env:
                   RELEASE_VERSION: ${{ needs.release-please.outputs.release_version }}
+              run: |
+                  actual=$(node -p "require('./package.json').version")
+                  echo "release-please : $RELEASE_VERSION"
+                  echo "package.json   : $actual"
+                  if [ "$actual" != "$RELEASE_VERSION" ]; then
+                    echo "::error::Refusing to build: package.json says $actual, but the release is $RELEASE_VERSION."
+                    exit 1
+                  fi
+
+            - name: Install dependencies (including build tooling)
+              run: npm ci
+
+            # A release's zip is named for its version. A rehearsal has none, so its zip is named for
+            # the commit, and cannot be mistaken for a release's.
+            - name: Name the build
+              id: name
+              env:
+                  RELEASE_VERSION: ${{ needs.release-please.outputs.release_version }}
+              run: |
+                  if [ -n "$RELEASE_VERSION" ]; then version="$RELEASE_VERSION"; else version="rehearsal-${GITHUB_SHA:0:7}"; fi
+                  echo "version=$version" >> "$GITHUB_OUTPUT"
+                  echo "building $version"
+
+            - name: Build, sign and notarize
+              env:
+                  RELEASE_VERSION: ${{ steps.name.outputs.version }}
+                  MACOS_CERTIFICATE: ${{ secrets.PROD_MACOS_CERTIFICATE_BASE64_CODESIGN }}
+                  MACOS_CERTIFICATE_PWD: ${{ secrets.PROD_MACOS_CERTIFICATE_CODESIGN_PWD }}
+                  MACOS_CERTIFICATE_NAME: ${{ secrets.PROD_MACOS_CERTIFICATE_CODESIGN_NAME }}
+                  MACOS_CI_KEYCHAIN_PWD: ${{ secrets.PROD_MACOS_CI_KEYCHAIN_PWD }}
+                  PROD_MACOS_NOTARIZATION_APPLE_ID: ${{ secrets.PROD_MACOS_NOTARIZATION_APPLE_ID }}
+                  PROD_MACOS_NOTARIZATION_TEAM_ID: ${{ secrets.PROD_MACOS_NOTARIZATION_TEAM_ID }}
+                  PROD_MACOS_NOTARIZATION_PWD: ${{ secrets.PROD_MACOS_NOTARIZATION_PWD }}
               run: bash ./scripts/release-macos.sh
 
             - name: Upload to existing release
+              if: needs.release-please.outputs.releases_created == 'true'
               env:
                   GH_TOKEN: ${{ github.token }}
-              run: |
-                  gh release upload ${{ needs.release-please.outputs.release_tag_name }} ./qs-jwt-${{ needs.release-please.outputs.release_version }}-macos-arm64.zip --clobber
+                  TAG: ${{ needs.release-please.outputs.release_tag_name }}
+                  ZIP_NAME: qs-jwt-${{ steps.name.outputs.version }}-macos-arm64.zip
+              run: gh release upload "$TAG" "./$ZIP_NAME" --clobber
 
-            - name: Tidy up before exiting
-              run: |
-                  pwd
-                  ls -la 
-                  rm -f build.cjs certificate.p12 sea-prep.blob
-                  rm -f "./${DIST_FILE_NAME}"
-                  rm -f "./${DIST_FILE_NAME}-${{ needs.release-please.outputs.release_version }}-macos-arm64.zip"
+            - name: Keep the rehearsal's zip
+              if: needs.release-please.outputs.releases_created != 'true'
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+              with:
+                  name: qs-jwt-${{ steps.name.outputs.version }}-macos-arm64
+                  path: ./qs-jwt-${{ steps.name.outputs.version }}-macos-arm64.zip
+                  retention-days: 3
+                  if-no-files-found: error
 
     # ---------------------------------------------------------------------------------------------
     # Windows, in three jobs, so that no job both runs repository code and holds the signing
