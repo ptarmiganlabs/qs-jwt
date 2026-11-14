@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.1](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.15.0...qs-jwt-v1.15.1) (2026-11-14)
+
+
+### Documentation
+
+* add sponsor section to README ([fbe6796](https://github.com/ptarmiganlabs/qs-jwt/commit/fbe67965f2c3c0f92f44e517fdccca970d7ab26c))
+* show the demo GIF under the README header ([92d54e9](https://github.com/ptarmiganlabs/qs-jwt/commit/92d54e92f198153536001fe3cd442f6af88959dc))
+
 ## [1.15.0](https://github.com/ptarmiganlabs/qs-jwt/compare/qs-jwt-v1.14.1...qs-jwt-v1.15.0) (2026-10-24)
 
 
