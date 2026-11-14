@@ -16,6 +16,10 @@
 <a href="https://github.com/sponsors/ptarmiganlabs">❤️ Sponsor</a>
 </p>
 
+<p align="center">
+  <img src="docs/img/qs-jwt-demo.gif" alt="qs-jwt in a terminal: one command creates a certificate pair and a signed JWT for CORP\anna.berg, the token is saved to a file, then decoded with its signature and audience verified" width="880">
+</p>
+
 A cross-platform command line tool for creating JWTs (JSON Web Tokens) that can be used to authenticate with Qlik Sense Enterprise on Windows (QSEoW) and Qlik Sense Cloud.
 
 ## ❤️ Support the project
